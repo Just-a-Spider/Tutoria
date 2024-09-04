@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import *
+from ..models import *
 """
 We need to create a custom serializer to include the role in the token.
 This way we can modify permissions based on the role.
@@ -52,6 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'first_name', 
             'last_name', 
             'username',

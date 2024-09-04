@@ -6,8 +6,9 @@ from rest_framework.exceptions import NotFound
 from rest_framework import status
 from .serializers import *
 from django.conf import settings
-from .utils.authentication import CustomJWTAuthentication
-from .utils.functions import authenticate_user, set_token_cookie
+from ..utils.authentication import CustomJWTAuthentication
+
+from ..utils.functions import authenticate_user, set_token_cookie
 from profiles.models import StudentProfile, TutorProfile
 
 class RegisterView(APIView):

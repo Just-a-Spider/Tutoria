@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import TokenError
 from ..models import *
-from ..serializers import CustomTokenObtainPairSerializer
+from ..api.serializers import CustomTokenObtainPairSerializer
 from .functions import set_token_cookie
 
 class CustomJWTAuthentication(JWTAuthentication):

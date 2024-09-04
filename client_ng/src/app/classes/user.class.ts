@@ -1,9 +1,8 @@
 import { Course } from './course.class';
 
 export interface LoginProps {
-  code: string;
+  email_username: string;
   password: string;
-  role: string;
 }
 
 export interface RegisterProps {
@@ -13,7 +12,7 @@ export interface RegisterProps {
   confirm_password: string;
   first_name: string;
   last_name: string;
-  gender: boolean;
+  gender?: boolean;
 }
 
 export class User {

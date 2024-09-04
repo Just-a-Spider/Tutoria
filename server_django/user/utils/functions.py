@@ -1,5 +1,5 @@
 from ..models import *
-from ..serializers import *
+from ..api.serializers import *
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone

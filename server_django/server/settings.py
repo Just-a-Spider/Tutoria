@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+dotenv_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@91^aooc_7yz4q$kvro-hpd#$wa=8(87to50=ip*&o9j-e0wel'
+SECRET_KEY = 'django-insecure-@91^aooc_7yz4q$kvro-hpd#$wa=8(87to50=ip*&o9j-e0wel' or os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,12 +52,16 @@ INSTALLED_APPS = [
     # CORS
     'corsheaders',    
 
+    # Social auth
+    'social_django',
+
     # Local apps
     'user',
     'profiles',
     'chat',
     'notifications',
-    'subjects_and_courses',
+    'courses',
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',  # Google Auth
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -95,11 +104,11 @@ ASGI_APPLICATION = 'server.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
-        'PASSWORD': '0116',
-        'NAME': 'tutoria',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'NAME': os.getenv('DB_NAME'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -198,3 +207,34 @@ SIMPLE_JWT = {
 
 # Email settings
 UNIVERSITY_DOMAIN = 'udh.edu.pe'
+# Social Auth settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'profile',
+    'email',
+    'https://www.googleapis.com/auth/classroom.courses.readonly',
+    'https://www.googleapis.com/auth/classroom.rosters.readonly',
+]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+LOGIN_REDIRECT_URL = '/auth/login/'
+LOGOUT_REDIRECT_URL = '/auth/login/'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'user.social.social_auth_pipeline.fetch_google_classroom_courses',  # Add this line
+)

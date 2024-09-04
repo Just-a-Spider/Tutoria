@@ -4,8 +4,8 @@ from chat.models import Chat
 from user.models import User
 from profiles.models import TutorProfile, StudentProfile
 
-REGISTER_URL = reverse('register')
-LOGIN_URL = reverse('login')
+REGISTER_URL = reverse('local:register')
+LOGIN_URL = reverse('local:login')
 REGISTER_USER_DATA_1 = {
     'first_name': 'John',
     'last_name': 'Doe',

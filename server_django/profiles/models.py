@@ -6,7 +6,7 @@ User = get_user_model()
 
 class StudentProfile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pictures', null=True, blank=True)
-    linked_courses = models.ManyToManyField('subjects_and_courses.Course')
+    linked_courses = models.ManyToManyField('courses.Course')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -19,7 +19,7 @@ class StudentProfile(models.Model):
 class TutorProfile(models.Model):
     profile_picture = models.ImageField(upload_to='tutor_profile_pictures', null=True, blank=True)
     bio = models.TextField()
-    linked_courses = models.ManyToManyField('subjects_and_courses.Course')
+    linked_courses = models.ManyToManyField('courses.Course')
     rating = models.FloatField(default=0.0)
     helped = models.IntegerField(default=0)
     user = models.OneToOneField(User, on_delete=models.CASCADE)

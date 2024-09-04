@@ -2,8 +2,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-REGISTER_URL = reverse('register')
-LOGIN_URL = reverse('login')
+REGISTER_URL = reverse('local:register')
+LOGIN_URL = reverse('local:login')
 REGISTER_USER_DATA = {
     'first_name': 'John',
     'last_name': 'Doe',
@@ -59,7 +59,7 @@ class MeLogoutViewsTests(APITestCase):
         self.client.post(LOGIN_URL, LOGIN_USER_DATA, format='json')
 
     def test_me_success(self):
-        url = reverse('me')
+        url = reverse('local:me')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         expected_data = {
@@ -72,7 +72,7 @@ class MeLogoutViewsTests(APITestCase):
         self.assertDictEqual(response.data, expected_data)
 
     def test_logout_success(self):
-        url = reverse('logout')
+        url = reverse('local:logout')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['detail'], 'Logout successful')
@@ -91,6 +91,6 @@ class RefreshTokenViewTests(APITestCase):
         self.client.post(LOGIN_URL, LOGIN_USER_DATA, format='json')
 
     def test_refresh_token_success(self):
-        url = reverse('refresh')
+        url = reverse('local:refresh')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

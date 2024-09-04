@@ -8,7 +8,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = StudentProfile.objects.all()
-    serializer_class = ProfileSerializer
+    serializer_class = StudentProfileSerializer
 
 class TutorProfileViewSet(viewsets.ModelViewSet):
     authentication_classes = [CustomJWTAuthentication]

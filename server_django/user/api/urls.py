@@ -1,6 +1,8 @@
 from .views import *
 from django.urls import path
 
+app_name = 'user'
+
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     # Session Related
