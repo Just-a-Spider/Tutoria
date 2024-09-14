@@ -57,5 +57,5 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name', 
             'username',
             'email',
-            'gender',
+            'gender'
         ]

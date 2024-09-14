@@ -1,11 +1,12 @@
 from django.db import models
+from uuid import uuid4
 
 class StudentNotification(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False, max_length=16)
     title = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
-    user = models.ForeignKey('profiles.StudentProfile', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -15,12 +16,12 @@ class StudentNotification(models.Model):
         verbose_name_plural = 'student_notifications'
 
 class TutorNotification(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False, max_length=16)
     title = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
-    user = models.ForeignKey('profiles.TutorProfile', on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return self.title
     

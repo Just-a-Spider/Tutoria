@@ -10,7 +10,7 @@ class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.email + ' - ' + self.user.first_name + ' ' + self.user.last_name
+        return self.user.username + ' as a student'
     
     class Meta:
         verbose_name = 'profile'
@@ -25,7 +25,7 @@ class TutorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.email + ' - ' + self.user.first_name + ' ' + self.user.last_name
+        return self.user.username + ' as a tutor'
     
     class Meta:
         verbose_name = 'tutor profile'

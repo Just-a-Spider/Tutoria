@@ -14,10 +14,10 @@ TEST_CHANNEL_LAYERS = {
     },
 }
 
-WS_PREFIX = '/ws/notifications/'
+WS_PREFIX = 'ws/notifications/'
 
 @database_sync_to_async
-def create_users_and_notifications(username, email, password, username_2, email_2, password_2):
+def create_users_and_profiles(username, email, password, username_2, email_2, password_2):
     user = get_user_model().objects.create_user(
         username=username,
         email=email,
@@ -35,16 +35,6 @@ def create_users_and_notifications(username, email, password, username_2, email_
     student_profile = StudentProfile.objects.create(
         user=user_2
     )
-    student_notification = StudentNotification.objects.create(
-        title='Test title',
-        content='Test content',
-        user=student_profile
-    )
-    tutor_notification = TutorNotification.objects.create(
-        title='Test title',
-        content='Test content',
-        user=tutor_profile
-    )
     
     token = AccessToken.for_user(user)
     return user, token
@@ -54,11 +44,11 @@ def create_users_and_notifications(username, email, password, username_2, email_
 class TestWebSocket:
     async def test_can_connect_to_server(self, settings):
         settings.CHANNEL_LAYERS = TEST_CHANNEL_LAYERS
-        _, access = await create_users_and_notifications(
+        _, access = await create_users_and_profiles(
             'jonedoe', 'test.user@udh.edu.pe', 'Test0116p',
             'janedoe', 'test.user2@udh.edu.pe','Test0116p1'
         )
-        communicator = WebsocketCommunicator(application, f'{WS_PREFIX}')
+        communicator = WebsocketCommunicator(application, f'{WS_PREFIX}{_.id}/')
         communicator.scope['headers'].append(
             (b'cookie', f'access_token={access}'.encode())
         )
@@ -69,35 +59,37 @@ class TestWebSocket:
 
     async def test_can_receive_notifications(self, settings):
         settings.CHANNEL_LAYERS = TEST_CHANNEL_LAYERS
-        _, access = await create_users_and_notifications(
+        user, access = await create_users_and_profiles(
             'jonedoe', 'test.user@udh.edu.pe', 'Test0116p',
             'janedoe', 'test.user2@udh.edu.pe','Test0116p1'
         )
-        communicator = WebsocketCommunicator(application, f'{WS_PREFIX}')
+        communicator = WebsocketCommunicator(application, f'{WS_PREFIX}{user.id}/')
         communicator.scope['headers'].append(
             (b'cookie', f'access_token={access}'.encode())
         )
-        
         connected, _ = await communicator.connect()
         assert connected is True
+        # Send a notification message to the group
         message = {
             'type': 'echo.notification',
             'data': 'This is a test notification.',
         }
         channel_layer = get_channel_layer()
-        await channel_layer.group_send('test', message=message)
+        await channel_layer.group_send(f'user_{user.id}_channel', message)
+        # Receive the message from the WebSocket
         response = await communicator.receive_json_from()
         assert response == message
+        # Disconnect the WebSocket
         await communicator.disconnect()
         
 
     async def test_cannot_connect_to_server(self, settings):
         settings.CHANNEL_LAYERS = TEST_CHANNEL_LAYERS
-        _, access = await create_users_and_notifications(
+        user, access = await create_users_and_profiles(
             'jonedoe', 'test.user@udh.edu.pe', 'Test0116p',
             'janedoe', 'test.user2@udh.edu.pe','Test0116p1'
         )
-        communicator = WebsocketCommunicator(application, f'{WS_PREFIX}')
+        communicator = WebsocketCommunicator(application, f'{WS_PREFIX}{user.id}/')
         connected, _ = await communicator.connect()
         assert connected is False
         await communicator.disconnect()

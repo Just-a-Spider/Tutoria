@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import sys
 
 dotenv_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(dotenv_path)
@@ -35,7 +36,10 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
+    # Channels
     'daphne',
+    'channels',
+
     # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -113,7 +117,7 @@ DATABASES = {
 }
 
 # Channels
-REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379')
+REDIS_URL = os.getenv('REDIS_URL')
 
 CHANNEL_LAYERS = {
     'default': {
@@ -124,6 +128,12 @@ CHANNEL_LAYERS = {
     },
 }
 
+if 'test' in sys.argv:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

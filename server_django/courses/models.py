@@ -1,6 +1,7 @@
 from django.db import models
 
 class Faculty(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     
     def __str__(self):
@@ -11,6 +12,7 @@ class Faculty(models.Model):
         verbose_name_plural = 'faculties'
 
 class Course(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     semester = models.IntegerField()
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE)

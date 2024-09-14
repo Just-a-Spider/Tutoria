@@ -11,6 +11,12 @@ export class AuthService {
   constructor(private authHttp: HttpClient) {}
 
   login(loginData: LoginProps) {
-    return this.authHttp.post<User>(this.baseUrl + 'login/', loginData);
+    return this.authHttp.post<User>(this.baseUrl + 'login/', loginData, {
+      withCredentials: true,
+    });
+  }
+
+  getUserId() {
+    return 1;
   }
 }

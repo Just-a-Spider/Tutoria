@@ -14,7 +14,7 @@ TEST_CHANNEL_LAYERS = {
     },
 }
 
-WS_PREFIX = '/ws/chat/'
+WS_PREFIX = 'ws/chat/'
 
 @database_sync_to_async
 def create_users_and_chat(username, email, password, username_2, email_2, password_2):

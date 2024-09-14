@@ -62,14 +62,16 @@ class MeLogoutViewsTests(APITestCase):
         url = reverse('local:me')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Create the expected data dictionary without the password field
         expected_data = {
-            'email': 'john.doe@udh.edu.pe',
-            'username': 'johndoe',
-            'first_name': 'John',
-            'last_name': 'Doe',
-            'gender': False
+            'id': response.data['id'],
+            'first_name': REGISTER_USER_DATA['first_name'],
+            'last_name': REGISTER_USER_DATA['last_name'],
+            'username': REGISTER_USER_DATA['username'],
+            'email': REGISTER_USER_DATA['email'],
+            'gender': REGISTER_USER_DATA['gender'],
         }
-        self.assertDictEqual(response.data, expected_data)
+        self.assertEqual(response.data, expected_data)
 
     def test_logout_success(self):
         url = reverse('local:logout')
