@@ -8,7 +8,7 @@ class Session(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    tutor = models.ForeignKey('profiles.Tutor', on_delete=models.CASCADE)
+    tutor = models.ForeignKey('profiles.TutorProfile', on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     session_type = models.CharField(max_length=1, choices=SESSION_TYPES)
@@ -25,7 +25,7 @@ class Session(models.Model):
 
 class SessionMember(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    student = models.ForeignKey('profiles.Student', on_delete=models.CASCADE)
+    student = models.ForeignKey('profiles.StudentProfile', on_delete=models.CASCADE)
     attended = models.BooleanField(default=False)
 
     def __str__(self):
