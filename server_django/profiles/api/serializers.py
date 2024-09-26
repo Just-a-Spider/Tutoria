@@ -9,8 +9,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class StudentProfileSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(read_only=True)
-    linked_courses = serializers.StringRelatedField(many=True)
-
+    
     class Meta:
         model = StudentProfile
         fields = '__all__'

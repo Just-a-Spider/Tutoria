@@ -1,25 +1,17 @@
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from server.middleware.auth import CustomJWTAuthentication
-from ..models import StudentNotification, TutorNotification
+from server.views.custom_views import CustomAuthenticatedModelViewset
+from notifications.models import StudentNotification, TutorNotification
 from .serializers import StudentNotificationSerializer, TutorNotificationSerializer
-from profiles.models import StudentProfile, TutorProfile
 
-
-class NotificationListView(viewsets.ReadOnlyModelViewSet):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
-    
-class StudentNotificationListView(NotificationListView):
+class StudentNotificationListView(CustomAuthenticatedModelViewset):
     serializer_class = StudentNotificationSerializer
+    http_method_names = ['get', 'head', 'options']
 
     def get_queryset(self):
-        profile = StudentProfile.objects.get(user=self.request.user)
-        return StudentNotification.objects.filter(user=profile)
+        return StudentNotification.objects.filter(user=self.request.user)
     
-class TutorNotificationListView(NotificationListView):
+class TutorNotificationListView(CustomAuthenticatedModelViewset):
     serializer_class = TutorNotificationSerializer
+    http_method_names = ['get', 'head', 'options']
 
     def get_queryset(self):
-        profile = TutorProfile.objects.get(user=self.request.user)
-        return TutorNotification.objects.filter(user=profile)
+        return TutorNotification.objects.filter(user=self.request.user)

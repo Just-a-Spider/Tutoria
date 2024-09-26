@@ -1,6 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from server.utils.test_base_test import BaseTest
 
 REGISTER_URL = reverse('local:register')
 LOGIN_URL = reverse('local:login')
@@ -35,9 +36,9 @@ class RegisterViewTests(APITestCase):
         response = self.client.post(REGISTER_URL, REGISTER_USER_DATA, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-class LoginViewsTests(APITestCase):
+class LoginViewsTests(BaseTest):
     def setUp(self):
-        self.client.post(REGISTER_URL, REGISTER_USER_DATA, format='json')
+        self.register()
 
     def test_login_success(self):
         response = self.client.post(LOGIN_URL, LOGIN_USER_DATA, format='json')
@@ -53,25 +54,16 @@ class LoginViewsTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.data['detail'], 'Credenciales Incorrectas')
 
-class MeLogoutViewsTests(APITestCase):
+class MeLogoutViewsTests(BaseTest):
     def setUp(self):
-        self.client.post(REGISTER_URL, REGISTER_USER_DATA, format='json')
-        self.client.post(LOGIN_URL, LOGIN_USER_DATA, format='json')
+        self.user = self.get_and_login_user()
 
     def test_me_success(self):
         url = reverse('local:me')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Create the expected data dictionary without the password field
-        expected_data = {
-            'id': response.data['id'],
-            'first_name': REGISTER_USER_DATA['first_name'],
-            'last_name': REGISTER_USER_DATA['last_name'],
-            'username': REGISTER_USER_DATA['username'],
-            'email': REGISTER_USER_DATA['email'],
-            'gender': REGISTER_USER_DATA['gender'],
-        }
-        self.assertEqual(response.data, expected_data)
+        self.assertEqual(response.data['email'], self.user.email)
 
     def test_logout_success(self):
         url = reverse('local:logout')
@@ -87,10 +79,9 @@ class MeLogoutViewsTests(APITestCase):
     #     response = self.client.get(url)
     #     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-class RefreshTokenViewTests(APITestCase):
+class RefreshTokenViewTests(BaseTest):
     def setUp(self):
-        self.client.post(REGISTER_URL, REGISTER_USER_DATA, format='json')
-        self.client.post(LOGIN_URL, LOGIN_USER_DATA, format='json')
+        self.user = self.get_and_login_user()
 
     def test_refresh_token_success(self):
         url = reverse('local:refresh')

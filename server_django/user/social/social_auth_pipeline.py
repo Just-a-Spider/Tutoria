@@ -76,7 +76,7 @@ def fetch_google_classroom_courses(backend, user, response, *args, **kwargs):
             )
 
             # Link the course to the student profile
-            student_profile.linked_courses.add(course)
+            course.students.add(student_profile)
 
     # Login the user with JWT from the user's view
     return login_success_response(user)

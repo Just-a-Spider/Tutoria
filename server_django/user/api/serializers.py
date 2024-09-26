@@ -59,3 +59,13 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'gender'
         ]
+
+class SendEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class PasswordResetTokenSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(max_length=128, write_only=True)
+
+    class Meta:
+        model = PasswordResetToken
+        fields = ['token', 'password']

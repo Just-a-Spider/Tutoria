@@ -1,17 +1,13 @@
 from django.urls import path
-from ..consumers import NotificationConsumer
+from rest_framework.routers import DefaultRouter
+from notifications.consumers import NotificationConsumer
 from .views import StudentNotificationListView, TutorNotificationListView
 
-urlpatterns = [
-    path(
-        'student/', StudentNotificationListView.as_view({'get': 'list'}), 
-        name='student-notifications'
-    ),
-    path(
-        'tutor/', TutorNotificationListView.as_view({'get': 'list'}), 
-        name='tutor-notifications'
-    ),
-]
+router = DefaultRouter()
+router.register(r'student', StudentNotificationListView, basename='student')
+router.register(r'tutor', TutorNotificationListView, basename='tutor')
+
+urlpatterns = router.urls
 
 websocket_urlpatterns = [
     path('ws/notifications/<int:user_id>/', NotificationConsumer.as_asgi()),

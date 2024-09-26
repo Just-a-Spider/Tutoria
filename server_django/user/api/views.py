@@ -8,6 +8,7 @@ from .serializers import *
 from django.conf import settings
 from server.middleware.auth import CustomJWTAuthentication
 from server.utils.user_utils import authenticate_user, set_token_cookie
+from server.views.custom_views import CustomAuthenticatedAPIView
 from profiles.models import StudentProfile, TutorProfile
 
 class RegisterView(APIView):
@@ -66,9 +67,7 @@ class LoginView(APIView):
             return Response({'detail': 'Usuario no Encontrado'}, status=status.HTTP_404_NOT_FOUND)
         return authenticate_user(user, password)
 
-class LogoutView(APIView):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+class LogoutView(CustomAuthenticatedAPIView):
 
     def get(self, request):
         response = Response({'detail': 'Logout successful'})
@@ -87,9 +86,7 @@ class MeView(RetrieveAPIView):
             raise NotFound('User not found')
         return user
 
-class RefreshTokenView(APIView):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+class RefreshTokenView(CustomAuthenticatedAPIView):
 
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
@@ -106,3 +103,38 @@ class RefreshTokenView(APIView):
         except Exception as e:
             print(e)
             return Response({'detail': 'Token de refresco no válido'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class GetSendPasswordReset(APIView):
+    serializer_class = SendEmailSerializer
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({'detail': 'Correo electrónico no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'detail': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        user.send_password_reset_email()
+        return Response({'detail': 'Correo electrónico enviado'}, status=status.HTTP_200_OK)
+        
+class PasswordResetView(APIView):
+    serializer_class = PasswordResetTokenSerializer
+
+    def post(self, request):
+        token = request.data.get('token')
+        password = request.data.get('password')
+        if not token or not password:
+            return Response({'detail': 'Token o contraseña no proporcionados'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            token = PasswordResetToken.objects.get(token=token)
+            user = User.objects.get(email=token.email)
+            user.set_password(password)
+            user.save()
+            # Delete all the tokens for the user
+            PasswordResetToken.objects.filter(email=token.email).delete()
+            return Response({'detail': 'Contraseña restablecida'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'detail': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except PasswordResetToken.DoesNotExist:
+            return Response({'detail': 'Token no encontrado'}, status=status.HTTP_404_NOT_FOUND)

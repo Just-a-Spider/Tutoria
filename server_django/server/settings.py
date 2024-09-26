@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'notifications',
     'courses',
     'posts',
+    'tutoring_sessions'
 ]
 
 MIDDLEWARE = [
@@ -180,9 +181,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Auth settings
-AUTH_USER_MODEL = 'user.User'
-
 # Rest_auth settings
 REST_AUTH = {
     #'LOGIN_SERIALIZER': 'accounts.serializers.CustomLoginSerializer',
@@ -248,3 +246,6 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
     'user.social.social_auth_pipeline.fetch_google_classroom_courses',  # Add this line
 )
+
+# Auth settings
+AUTH_USER_MODEL = 'user.User'
