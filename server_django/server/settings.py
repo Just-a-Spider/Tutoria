@@ -28,6 +28,11 @@ if not DEBUG:
         'http://localhost:4200'
     ]
     CORS_ALLOW_CREDENTIALS = True
+
+    CSRF_TRUSTED_ORIGINS = [
+    'https://tutoria-3jn8.onrender.com',
+    'http://localhost:4200',
+]
 else:
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOW_CREDENTIALS = True
