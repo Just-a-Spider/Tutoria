@@ -17,9 +17,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@91^aooc_7yz4q$kvro-hpd#$wa=8(87to50=ip*&o9j-e0wel' or os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # CORS
 if not DEBUG:
@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     # Channels
     'daphne',
     'channels',
+
+    # Aesthetic
+    "unfold",
 
     # Django apps
     'django.contrib.admin',
@@ -71,6 +74,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static Files
     'corsheaders.middleware.CorsMiddleware', # CORS
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -86,7 +90,7 @@ ROOT_URLCONF = 'server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'server/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,16 +110,26 @@ ASGI_APPLICATION = 'server.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'NAME': os.getenv('DB_NAME'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'NAME': os.getenv('DB_NAME'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+        }
     }
-}
+else:
+    import dj_database_url
+
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600
+        )
+    }
 
 # Channels
 REDIS_URL = os.getenv('REDIS_URL')
@@ -169,8 +183,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'server/templates'),
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 MEDIA_URL = '/media/'
@@ -192,6 +210,7 @@ REST_AUTH = {
 # Rest Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'server.middleware.auth.CustomJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
@@ -215,6 +234,7 @@ SIMPLE_JWT = {
 
 # Email settings
 UNIVERSITY_DOMAIN = 'udh.edu.pe'
+
 # Social Auth settings
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('GOOGLE_OAUTH2_KEY')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('GOOGLE_OAUTH2_SECRET')
@@ -231,8 +251,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_REDIRECT_URL = '/auth/login/'
-LOGOUT_REDIRECT_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL')
+LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL')
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -249,3 +269,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 # Auth settings
 AUTH_USER_MODEL = 'user.User'
+
+# Unfold settings
+from server.utils.unfold_settings import UNFOLD_SETTINGS
+UNFOLD = UNFOLD_SETTINGS

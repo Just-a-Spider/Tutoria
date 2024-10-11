@@ -1,0 +1,75 @@
+/* Adjust input fields */
+input[type="text"], input[type="password"], input[type="email"], input[type="number"], textarea {
+    background-color: #f0f0f0;  /* Lighter background for light mode */
+    color: #1a202c;  /* Dark text for light mode */
+    border: 1px solid #ccc;  /* Light grey border */
+    padding: 10px;
+    border-radius: 5px;
+    width: 70%;  /* Adjust width to avoid full width */
+    max-width: 500px;  /* Set a maximum width */
+    transition: all 0.3s ease; /* Smooth transitions */
+    resize: vertical; /* Allow vertical resizing of text areas */
+}
+
+/* Adjust labels */
+label {
+    color: #4a5568;  /* Darker color for light mode */
+    font-weight: bold;
+}
+
+/* Style the password box */
+.password {
+    background-color: #e2e8f0;  /* Light grey for password box */
+    color: #1a202c;  /* Dark text for password box */
+    border-radius: 4px;
+    padding: 8px;
+}
+
+/* Dark mode overrides */
+.dark input[type="text"], .dark input[type="password"], .dark input[type="email"], .dark input[type="number"], .dark textarea {
+    background-color: #1a202c;  /* Darker background */
+    color: #f7fafc;  /* Light text */
+    border: 1px solid #2d3748;  /* Darker border */
+}
+
+/* Dark mode password box */
+.dark .password {
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+/* Adjust input focus styling */
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="number"]:focus, textarea:focus {
+    border-color: #3182ce;  /* Blue border on focus */
+    box-shadow: 0 0 0 1px #3182ce;  /* Subtle shadow on focus */
+}
+
+/* Adjust select dropdowns */
+select {
+    background-color: #f0f0f0;  /* Light mode background */
+    color: #1a202c;  /* Text color in light mode */
+    border: 1px solid #ccc;  /* Border color for light mode */
+    padding: 10px;
+    border-radius: 5px;
+    width: 70%;  /* Adjust width */
+    max-width: 500px;  /* Set a maximum width */
+    transition: all 0.3s ease; /* Smooth transitions */
+}
+
+/* Dark mode overrides for select dropdown */
+.dark select {
+    background-color: #1a202c;  /* Darker background for dark mode */
+    color: #f7fafc;  /* Lighter text for dark mode */
+    border: 1px solid #2d3748;  /* Darker border for dark mode */
+}
+
+/* Adjust select focus styling */
+select:focus {
+    border-color: #3182ce;  /* Blue border on focus */
+    box-shadow: 0 0 0 1px #3182ce;  /* Subtle shadow on focus */
+}
+
+/* Disable option styling for greyed-out options (optional) */
+option:disabled {
+    color: #a0aec0;  /* Lighter grey color for disabled options */
+}

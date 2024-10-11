@@ -1,11 +1,12 @@
 import requests
 from django.conf import settings
+from django.shortcuts import redirect
 from courses.models import Course, Faculty
 from profiles.models import StudentProfile, TutorProfile
 from django.db import transaction
 from django.utils import timezone
 from django.http import HttpResponse
-from ..api.serializers import CustomTokenObtainPairSerializer
+from user.api.serializers import CustomTokenObtainPairSerializer
 
 def login_success_response(user):
     refresh = CustomTokenObtainPairSerializer.get_token(user)
@@ -14,7 +15,7 @@ def login_success_response(user):
     user.last_login = timezone.now()
     user.save()
 
-    response = HttpResponse('Login successful')
+    response = redirect(settings.LOGIN_REDIRECT_URL)
     response.set_cookie(
         key=settings.SIMPLE_JWT['AUTH_COOKIE'],
         value=str(access_token),
@@ -31,6 +32,7 @@ def login_success_response(user):
         httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
     )
+
     return response
 
 def fetch_google_classroom_courses(backend, user, response, *args, **kwargs):

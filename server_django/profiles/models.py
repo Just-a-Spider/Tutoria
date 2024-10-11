@@ -10,8 +10,8 @@ class StudentProfile(models.Model):
         return self.user.username + ' as a student'
     
     class Meta:
-        verbose_name = 'profile'
-        verbose_name_plural = 'profiles'
+        verbose_name = 'student profile'
+        verbose_name_plural = 'student profiles'
 
 class TutorProfile(models.Model):
     profile_picture = models.ImageField(upload_to='tutor_profile_pictures', null=True, blank=True)

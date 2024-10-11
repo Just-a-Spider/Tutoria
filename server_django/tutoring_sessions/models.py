@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from courses.models import Course
 
 class Session(models.Model):
     SESSION_TYPES = [
@@ -9,10 +10,12 @@ class Session(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tutor = models.ForeignKey('profiles.TutorProfile', on_delete=models.CASCADE)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
     session_type = models.CharField(max_length=1, choices=SESSION_TYPES)
     video_file = models.FileField(upload_to='videos/', null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.tutor.user.get_full_name()} - {self.start_time}'

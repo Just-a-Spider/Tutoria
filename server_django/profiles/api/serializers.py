@@ -14,6 +14,11 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         model = StudentProfile
         fields = '__all__'
 
+class SelectStudentProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentProfile
+        fields = ['user']
+
 class TutorProfileSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(read_only=True)
 
