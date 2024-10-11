@@ -20,7 +20,6 @@ class RegisterView(APIView):
         password = serializer.validated_data.get('password')
         first_name = serializer.validated_data.get('first_name')
         last_name = serializer.validated_data.get('last_name')
-        gender = serializer.validated_data.get('gender')
         email = serializer.validated_data.get('email')
         username = serializer.validated_data.get('username')
         
@@ -37,7 +36,6 @@ class RegisterView(APIView):
         )
         user.first_name = first_name
         user.last_name = last_name
-        user.gender = gender
         user.save()
 
         # Create both a profile and a tutor profile for the user
