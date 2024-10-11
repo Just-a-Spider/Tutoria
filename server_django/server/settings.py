@@ -30,7 +30,7 @@ if not DEBUG:
     ],
     CORS_ALLOW_CREDENTIALS = True
 else:
-    CORS_ALLOW_ALL_ORIGINS = [
+    CORS_ALLOWED_ORIGINS = [
         'https://tutoria-3jn8.onrender.com', 
         'http://localhost:4200',
     ]
