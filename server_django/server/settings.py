@@ -31,6 +31,7 @@ if not DEBUG:
 
     CSRF_TRUSTED_ORIGINS = [
     'https://tutoria-3jn8.onrender.com',
+    'http://tutoria-3jn8.onrender.com',
     'http://localhost:4200',
 ]
 else:
