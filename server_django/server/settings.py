@@ -272,6 +272,19 @@ SOCIAL_AUTH_PIPELINE = (
     'user.social.social_auth_pipeline.fetch_google_classroom_courses',  # Add this line
 )
 
+# Email Settings
+# https://docs.djangoproject.com/en/5.0/topics/email/
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend" 
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"                                   # Your email host
+EMAIL_USE_TLS = True                                            # Do not question it, just use it
+EMAIL_PORT = 587                                                # Same here
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')                  # your email address
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')          # your password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER          
+
+
 # Auth settings
 AUTH_USER_MODEL = 'user.User'
 
