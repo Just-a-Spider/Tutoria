@@ -22,7 +22,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     )
     first_name = serializers.CharField(max_length=50)
     last_name = serializers.CharField(max_length=50)
-    gender = serializers.BooleanField(required=False)
 
     class Meta:
         model = User
@@ -31,8 +30,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'email', 
             'password',
             'first_name', 
-            'last_name', 
-            'gender'
+            'last_name'
         ]
     
 class LoginSerializer(serializers.Serializer):
@@ -56,8 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name', 
             'last_name', 
             'username',
-            'email',
-            'gender'
+            'email'
         ]
 
 class SendEmailSerializer(serializers.Serializer):
