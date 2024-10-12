@@ -12,6 +12,14 @@ class User(AbstractUser):
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
+    def send_password_reset_email(self):
+        token = PasswordResetToken.objects.create(
+            email=self.email,
+            token=PasswordResetToken.generate_token()
+        )
+        token.send_email()
+        pass
+
 class PasswordResetToken(models.Model):
     email = models.EmailField()
     token = models.CharField(max_length=255)
