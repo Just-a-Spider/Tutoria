@@ -12,7 +12,6 @@ class SessionAdmin(admin.ModelAdmin):
     list_filter = ['tutor', 'date', 'session_type', 'course']
     search_fields = ['tutor__user__username', 'course__name']
     ordering = ['date', 'start_time']
-    readonly_fields = ['date', 'start_time', 'end_time', 'course']
     fieldsets = [
         ('Meta', {'fields': ['tutor', 'session_type']}),
         ('Date and Time', {'fields': ['date', 'start_time', 'end_time']}),
