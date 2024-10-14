@@ -1,6 +1,7 @@
 from rest_framework_nested.routers import DefaultRouter, NestedDefaultRouter
-from .course.views import CourseViewSet
+from .course.views import CourseViewSet, GetAllCoursesAPIView
 from .post.views import RequestHelpPostViewSet, OfferHelpPostViewSet, CommentViewSet
+from django.urls import path, include
 
 # Create the main router
 router = DefaultRouter()
@@ -18,4 +19,8 @@ request_help_posts_router.register(r'comments', CommentViewSet, basename='reques
 offer_help_posts_router = NestedDefaultRouter(courses_router, r'offer-help-posts', lookup='post')
 offer_help_posts_router.register(r'comments', CommentViewSet, basename='offer-help-post-comments')
 
-urlpatterns = router.urls + courses_router.urls + request_help_posts_router.urls + offer_help_posts_router.urls
+nested_urlpatterns = router.urls + courses_router.urls + request_help_posts_router.urls + offer_help_posts_router.urls
+
+urlpatterns = [
+    path('all-courses/', GetAllCoursesAPIView.as_view(), name='all-courses'),
+] + nested_urlpatterns

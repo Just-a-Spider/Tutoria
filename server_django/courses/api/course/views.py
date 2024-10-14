@@ -5,13 +5,25 @@ from profiles.api import serializers as p_serializers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from server.views.custom_views import CustomAuthenticatedModelViewset
+from server.views.custom_views import CustomAuthenticatedModelViewset, CustomAuthenticatedAPIView
 from rest_framework.exceptions import PermissionDenied
 
+class GetAllCoursesAPIView(CustomAuthenticatedAPIView):
+    def get(self, request):
+        courses = models.Course.objects.all()
+        serializer = serializers.CourseModelSerializer(courses, many=True)
+        return Response(serializer.data)
+
 class CourseViewSet(CustomAuthenticatedModelViewset):
-    queryset = models.Course.objects.all()
     serializer_class = serializers.CourseModelSerializer
     lookup_field = 'id'
+
+    def get_queryset(self):
+        return models.Course.objects.filter(
+            students__user=self.request.user
+        ) | models.Course.objects.filter(
+            tutors__user=self.request.user
+        )
 
     def get_user_profile(self, user, profile_model):
         """Helper method to get user profile by user_id."""
