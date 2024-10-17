@@ -5,6 +5,7 @@ from profiles.api import serializers as p_serializers
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.pagination import LimitOffsetPagination
 from server.views.custom_views import CustomAuthenticatedModelViewset, CustomAuthenticatedAPIView
 from rest_framework.exceptions import PermissionDenied
 
@@ -17,13 +18,20 @@ class GetAllCoursesAPIView(CustomAuthenticatedAPIView):
 class CourseViewSet(CustomAuthenticatedModelViewset):
     serializer_class = serializers.CourseModelSerializer
     lookup_field = 'id'
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
-        return models.Course.objects.filter(
+        student_courses = models.Course.objects.filter(
             students__user=self.request.user
-        ) | models.Course.objects.filter(
+        )
+        tutor_courses = models.Course.objects.filter(
             tutors__user=self.request.user
         )
+        
+        if tutor_courses.exists():
+            student_courses.union(tutor_courses)
+
+        return student_courses
 
     def get_user_profile(self, user, profile_model):
         """Helper method to get user profile by user_id."""
