@@ -34,6 +34,7 @@ class OfferHelpPostViewSet(CustomAuthenticatedModelViewset):
 class CommentViewSet(CustomAuthenticatedModelViewset):
     serializer_class = serializers.CommentModelSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         # Get the comments for a specific post
