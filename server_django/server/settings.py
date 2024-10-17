@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
 
     # CORS
     'corsheaders',    

@@ -2,18 +2,23 @@ from . import serializers
 from courses import models
 from profiles import models as p_models
 from profiles.api import serializers as p_serializers
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
 from server.views.custom_views import CustomAuthenticatedModelViewset, CustomAuthenticatedAPIView
 from rest_framework.exceptions import PermissionDenied
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import ListAPIView
+from .filters import CourseFilter
 
-class GetAllCoursesAPIView(CustomAuthenticatedAPIView):
-    def get(self, request):
-        courses = models.Course.objects.all()
-        serializer = serializers.CourseModelSerializer(courses, many=True)
-        return Response(serializer.data)
+class GetAllCoursesAPIView(ListAPIView):
+    queryset = models.Course.objects.all().order_by('id')
+    serializer_class = serializers.CourseModelSerializer
+    pagination_class = LimitOffsetPagination
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_class = CourseFilter
+    ordering_fields = ['id', 'name', 'faculty']
 
 class CourseViewSet(CustomAuthenticatedModelViewset):
     serializer_class = serializers.CourseModelSerializer
