@@ -1,1 +1,45 @@
-<p>auth works!</p>
+<div class="login-form-container">
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+    <h2>Login</h2>
+    <div class="form-group">
+      <label for="username">Username/Email</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        [(ngModel)]="loginModel.email_username"
+        required
+        #username="ngModel"
+      />
+      @if ( email_username.invalid && (email_username.dirty ||
+      email_username.touched) ){
+      <div class="error">Username is required</div>
+      }
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="loginModel.password"
+        required
+        minlength="6"
+        #password="ngModel"
+      />
+      @if ( password.invalid && (password.dirty || password.touched) ) {
+      <div class="error">
+        @if ( password.errors?.['required'] ) { Password is required } @else {
+        Password must be at least 6 characters }
+      </div>
+      }
+    </div>
+    <button
+      type="submit"
+      [disabled]="loginForm.form.invalid"
+      class="wow-button"
+    >
+      Log In
+    </button>
+  </form>
+</div>
