@@ -3,10 +3,12 @@ from server.views.custom_views import CustomAuthenticatedModelViewset
 from posts import models
 from profiles.models import StudentProfile, TutorProfile
 from django.contrib.contenttypes.models import ContentType
+from rest_framework.pagination import LimitOffsetPagination
 
 class RequestHelpPostViewSet(CustomAuthenticatedModelViewset):
     serializer_class = serializers.RequestHelpPostModelSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         return models.RequestHelpPost.objects.filter(course=self.kwargs.get('course_id'))
@@ -19,6 +21,7 @@ class RequestHelpPostViewSet(CustomAuthenticatedModelViewset):
 class OfferHelpPostViewSet(CustomAuthenticatedModelViewset):
     serializer_class = serializers.OfferHelpPostModelSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         return models.OfferHelpPost.objects.filter(course=self.kwargs.get('course_id'))
