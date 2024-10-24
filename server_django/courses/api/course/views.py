@@ -65,6 +65,13 @@ class CourseViewSet(CustomAuthenticatedModelViewset):
         tutors = course.tutors.all()
         serializer = p_serializers.TutorProfileSerializer(tutors, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def try_out_tutors(self, request, *args, **kwargs):
+        course = self.get_object()
+        try_out_tutors = course.tutortryouts_set.all()
+        serializer = serializers.TryOutTutorModelSerializer(try_out_tutors, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
     def add_student(self, request, *args, **kwargs):
@@ -93,6 +100,12 @@ class CourseViewSet(CustomAuthenticatedModelViewset):
         course = self.get_object()
         user = request.user
         tutor_profile = self.get_user_profile(user, p_models.TutorProfile)
+        # Return 400 if the tutor is already a tutor for the course
+        if course.tutors.filter(user=user).exists() or course.tutortryouts_set.filter(tutor=tutor_profile).exists():
+            return Response(
+                {'message': 'You are already a tutor for this course'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
         # Create a TutorTryOut instance
         tutor_tryout = models.TutorTryOuts.objects.create(tutor=tutor_profile, course=course)
         tutor_tryout.save()
@@ -106,6 +119,8 @@ class CourseViewSet(CustomAuthenticatedModelViewset):
         course = self.get_object()
         user = request.user
         tutor_profile = self.get_user_profile(user, p_models.TutorProfile)
+        # Remove the TutorTryOut instance
+        models.TutorTryOuts.objects.get(tutor=tutor_profile, course=course).delete()
         course.tutors.remove(tutor_profile)
         return Response(
             {'message': 'Tutor removed successfully'}, 

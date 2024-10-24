@@ -18,4 +18,11 @@ class CourseModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Course
-        fields = '__all__'
+        exclude = ['semester']
+
+class TryOutTutorModelSerializer(serializers.ModelSerializer):
+    tutor = serializers.StringRelatedField()
+
+    class Meta:
+        model = models.TutorTryOuts
+        exclude = ['course']
