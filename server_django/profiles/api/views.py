@@ -5,8 +5,6 @@ from server.middleware.auth import CustomJWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 class StudentProfileViewSet(viewsets.ModelViewSet):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
     serializer_class = StudentProfileSerializer
 
     def get_queryset(self):
@@ -16,8 +14,6 @@ class StudentProfileViewSet(viewsets.ModelViewSet):
         return StudentProfile.objects.get(user=self.request.user)
 
 class TutorProfileViewSet(viewsets.ModelViewSet):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
     serializer_class = TutorProfileSerializer
 
     def get_queryset(self):

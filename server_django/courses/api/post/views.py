@@ -1,11 +1,11 @@
 from . import serializers
-from server.views.custom_views import CustomAuthenticatedModelViewset
 from posts import models
 from profiles.models import StudentProfile, TutorProfile
 from django.contrib.contenttypes.models import ContentType
+from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
 
-class RequestHelpPostViewSet(CustomAuthenticatedModelViewset):
+class RequestHelpPostViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RequestHelpPostModelSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
     pagination_class = LimitOffsetPagination
@@ -18,7 +18,7 @@ class RequestHelpPostViewSet(CustomAuthenticatedModelViewset):
         student = StudentProfile.objects.get(user=user)
         serializer.save(student=student, course_id=self.kwargs.get('course_id'))
 
-class OfferHelpPostViewSet(CustomAuthenticatedModelViewset):
+class OfferHelpPostViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.OfferHelpPostModelSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
     pagination_class = LimitOffsetPagination
@@ -31,7 +31,7 @@ class OfferHelpPostViewSet(CustomAuthenticatedModelViewset):
         tutor_profile = TutorProfile.objects.get(user=user)
         serializer.save(tutor=tutor_profile, course_id=self.kwargs.get('course_id'))
 
-class CommentViewSet(CustomAuthenticatedModelViewset):
+class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CommentModelSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
     pagination_class = LimitOffsetPagination

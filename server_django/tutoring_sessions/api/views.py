@@ -1,16 +1,16 @@
-from server.views.custom_views import CustomAuthenticatedModelViewset
 from tutoring_sessions import models
 from courses.models import Course
 from profiles.models import StudentProfile, TutorProfile
 from profiles.api.serializers import SelectStudentProfileSerializer
 from . import serializers
 
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 
 
-class SessionViewSet(CustomAuthenticatedModelViewset):
+class SessionViewSet(ModelViewSet):
     lookup_field = 'id'
 
     # Default Methods
@@ -63,6 +63,6 @@ class SessionViewSet(CustomAuthenticatedModelViewset):
         serializer = serializers.SessionMemberSerializer(members, many=True)
         return Response(serializer.data)
 
-class FullSessionViewSet(CustomAuthenticatedModelViewset):
+class FullSessionViewSet(ModelViewSet):
     queryset = models.Session.objects.all()
     serializer_class = serializers.FullSessionSerializer

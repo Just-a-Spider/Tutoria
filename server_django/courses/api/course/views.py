@@ -3,10 +3,10 @@ from courses import models
 from profiles import models as p_models
 from profiles.api import serializers as p_serializers
 from rest_framework import status, filters
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
-from server.views.custom_views import CustomAuthenticatedModelViewset, CustomAuthenticatedAPIView
 from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import ListAPIView
@@ -20,7 +20,7 @@ class GetAllCoursesAPIView(ListAPIView):
     filterset_class = CourseFilter
     ordering_fields = ['id', 'name', 'faculty']
 
-class CourseViewSet(CustomAuthenticatedModelViewset):
+class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CourseModelSerializer
     lookup_field = 'id'
     pagination_class = LimitOffsetPagination

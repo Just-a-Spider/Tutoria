@@ -6,12 +6,12 @@ from rest_framework.exceptions import NotFound
 from rest_framework import status
 from .serializers import *
 from django.conf import settings
-from server.middleware.auth import CustomJWTAuthentication
 from server.utils.user_utils import authenticate_user, set_token_cookie
-from server.views.custom_views import CustomAuthenticatedAPIView
 from profiles.models import StudentProfile, TutorProfile
 
 class RegisterView(APIView):
+    permission_classes = []
+    authentication_classes = []
     serializer_class = RegisterSerializer
 
     def post(self, request):
@@ -45,6 +45,8 @@ class RegisterView(APIView):
         return Response({'detail': 'Registro Exitoso'}, status=status.HTTP_201_CREATED)
 
 class LoginView(APIView):
+    permission_classes = []
+    authentication_classes = []
     serializer_class = LoginSerializer
 
     def post(self, request):
@@ -65,7 +67,7 @@ class LoginView(APIView):
             return Response({'detail': 'Usuario no Encontrado'}, status=status.HTTP_404_NOT_FOUND)
         return authenticate_user(user, password)
 
-class LogoutView(CustomAuthenticatedAPIView):
+class LogoutView(APIView):
 
     def get(self, request):
         response = Response({'detail': 'Logout successful'})
@@ -74,8 +76,6 @@ class LogoutView(CustomAuthenticatedAPIView):
         return response
 
 class MeView(RetrieveAPIView):
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     
     def get_object(self):
@@ -84,7 +84,7 @@ class MeView(RetrieveAPIView):
             raise NotFound('User not found')
         return user
 
-class RefreshTokenView(CustomAuthenticatedAPIView):
+class RefreshTokenView(RetrieveAPIView):
 
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
@@ -103,6 +103,8 @@ class RefreshTokenView(CustomAuthenticatedAPIView):
             return Response({'detail': 'Token de refresco no válido'}, status=status.HTTP_400_BAD_REQUEST)
         
 class GetSendPasswordReset(APIView):
+    permission_classes = []
+    authentication_classes = []
     serializer_class = SendEmailSerializer
 
     def post(self, request):
@@ -117,6 +119,8 @@ class GetSendPasswordReset(APIView):
         return Response({'detail': 'Correo electrónico enviado'}, status=status.HTTP_200_OK)
         
 class PasswordResetView(APIView):
+    permission_classes = []
+    authentication_classes = []
     serializer_class = PasswordResetTokenSerializer
 
     def post(self, request):
