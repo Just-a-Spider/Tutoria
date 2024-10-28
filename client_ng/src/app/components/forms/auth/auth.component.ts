@@ -1,6 +1,16 @@
-import { Component } from '@angular/core';
-import { ToggleButtonModule } from 'primeng/togglebutton';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Message } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { MessagesModule } from 'primeng/messages';
+import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -8,24 +18,88 @@ import { AuthService } from '../../../services/auth.service';
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
-  imports: [FormsModule, ToggleButtonModule],
+  imports: [
+    ButtonModule,
+    CardModule,
+    ReactiveFormsModule,
+    PasswordModule,
+    InputTextModule,
+    MessagesModule,
+  ],
 })
 export class AuthComponent {
-  loginModel = {
-    email_username: '',
-    password: '',
-  };
+  toggleForm: boolean = false;
+  loginFormGroup!: FormGroup;
+  registerFormGroup!: FormGroup;
+  messages: Message[] = [];
 
   constructor(private authService: AuthService) {}
 
-  login() {
-    this.authService.login(this.loginModel).subscribe({
-      next: (res) => {
-        console.log(res);
-      },
-      error: (err) => {
-        console.log(err);
-      },
+  ngOnInit() {
+    this.loginFormGroup = new FormGroup({
+      email_username: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
     });
+
+    this.registerFormGroup = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      first_name: new FormControl('', [Validators.required]),
+      last_name: new FormControl('', [Validators.required]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+      confirm_password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
+    });
+  }
+
+  toggle() {
+    this.toggleForm = !this.toggleForm;
+    this.messages = [];
+  }
+
+  login() {
+    if (this.loginFormGroup.valid) {
+      this.authService.login(this.loginFormGroup.value).subscribe({
+        next: () => {
+          window.location.href = '/home';
+        },
+        error: (error) => {
+          this.messages = [
+            { severity: 'error', summary: 'Error', detail: error.error.detail },
+          ];
+        },
+      });
+    }
+  }
+
+  forgotPassword() {
+    // Redirect to forgot password page
+    window.location.href = '/reset-password';
+  }
+
+  register() {
+    if (this.registerFormGroup.valid) {
+      this.authService.register(this.registerFormGroup.value).subscribe({
+        next: (response) => {
+          this.messages = [
+            {
+              severity: 'success',
+              summary: 'Registro exitoso',
+              detail: 'El usuario ha sido registrado exitosamente',
+            },
+          ];
+          this.toggle();
+        },
+        error: (error) => {
+          this.messages = [
+            { severity: 'error', summary: 'Error', detail: error.error.detail },
+          ];
+        },
+      });
+    }
   }
 }

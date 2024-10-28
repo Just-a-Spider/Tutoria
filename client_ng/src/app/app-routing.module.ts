@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthComponent } from './components/forms/auth/auth.component'; // Import the AuthComponent
 
 const routes: Routes = [
-  { path: 'auth', component: AuthComponent }, // Define the route for AuthComponent
+  { path: '', component: AuthComponent }, // Define the route for AuthComponent
 ];
 
 @NgModule({

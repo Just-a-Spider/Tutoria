@@ -9,10 +9,10 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(data: any) {
-    return this.http.post(`${environment.apiUrl}auth/register`, data);
+    return this.http.post(`${environment.apiUrl}auth/register/`, data);
   }
 
   login(data: any) {
-    return this.http.post(`${environment.apiUrl}auth/login`, data);
+    return this.http.post(`${environment.apiUrl}auth/login/`, data);
   }
 }
