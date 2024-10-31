@@ -38,6 +38,20 @@ else:
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-api-key',  # Add the X-API-KEY header here
+    'x-requested-with',
+    'accept',
+    'origin',
+    'user-agent',
+    'dnt',
+    'cache-control',
+    'x-csrftoken',
+    'x-frame-options',
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -89,6 +103,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',  # Google Auth
+    'server.middleware.api_key.APIKeyMiddleware',  # API Key
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -295,3 +310,6 @@ AUTH_USER_MODEL = 'user.User'
 # Unfold settings
 from server.utils.unfold_settings import UNFOLD_SETTINGS
 UNFOLD = UNFOLD_SETTINGS
+
+# API Key
+API_KEY = os.getenv('API_KEY')
