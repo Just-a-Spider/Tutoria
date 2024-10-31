@@ -1,31 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessagesModule } from 'primeng/messages';
-import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
-  standalone: true,
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
-  imports: [
-    ButtonModule,
-    CardModule,
-    ReactiveFormsModule,
-    PasswordModule,
-    InputTextModule,
-    MessagesModule,
-  ],
 })
 export class AuthComponent {
   toggleForm: boolean = false;
