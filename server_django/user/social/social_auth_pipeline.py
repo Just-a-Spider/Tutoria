@@ -73,7 +73,7 @@ def fetch_google_classroom_courses(backend, user, response, *args, **kwargs):
 
             # Get or create the course
             course, created = Course.objects.get_or_create(
-                name=course_name,
+                name=course_name.split(' (')[0],
                 defaults={'semester': 1, 'faculty': faculty}
             )
 

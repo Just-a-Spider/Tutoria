@@ -13,12 +13,16 @@ from rest_framework.generics import ListAPIView
 from .filters import CourseFilter
 
 class GetAllCoursesAPIView(ListAPIView):
-    queryset = models.Course.objects.all().order_by('id')
     serializer_class = serializers.CourseModelSerializer
-    pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = CourseFilter
     ordering_fields = ['id', 'name', 'faculty']
+
+    def get_queryset(self):
+        free_courses = models.Course.objects.exclude(
+            students__user=self.request.user
+        ).order_by('id')
+        return free_courses
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CourseModelSerializer

@@ -15,20 +15,22 @@ import { AppComponent } from './app.component';
 import { apiKeyInterceptor } from './interceptors/api-key.interceptor';
 
 // PrimeNG stuff
+import { AccordionModule } from 'primeng/accordion';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { PasswordModule } from 'primeng/password';
 
 // Local Components
 import { ChatBoxComponent } from './components/UI/chat-box/chat-box.component';
+import { HeaderComponent } from './components/UI/header/header.component';
+import { NotificationsComponent } from './components/UI/header/notifications/notifications.component';
 import { SideBarComponent } from './components/UI/side-bar/side-bar.component';
 import { AuthComponent } from './components/forms/auth/auth.component';
 import { HomeView } from './views/home/home.component';
 import { LandingView } from './views/landing/landing.component';
-import { HeaderComponent } from './components/UI/header/header.component';
-import { NotificationsComponent } from './components/UI/header/notifications/notifications.component';
 import { ProfileView } from './views/profile/profile.component';
 
 @NgModule({
@@ -48,6 +50,8 @@ import { ProfileView } from './views/profile/profile.component';
     AppRoutingModule,
     ButtonModule,
     CardModule,
+    AccordionModule,
+    DividerModule,
     InputTextModule,
     MessagesModule,
     PasswordModule,

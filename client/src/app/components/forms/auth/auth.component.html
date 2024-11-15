@@ -1,10 +1,15 @@
+<!-- Content goes here -->
 <div class="flex justify-content-center align-items-center h-screen">
-  <!-- Content goes here -->
   <div
     class="flex flex-column align-items-center justify-content-center w-full md:w-5 lg:w-4 card p-3"
   >
     <h2 class="text-center">Nombre de la Aplicación</h2>
     <div class="card w-full p-4">
+      <p-button
+        label="Iniciar sesión con Google"
+        styleClass="w-full mt-3"
+        (click)="googleLogin()"
+      />
       <h2 class="mb-3">{{ toggleForm ? "Regístrate" : "Bienvenido" }}</h2>
       <!-- Form for login or register -->
       @if (toggleForm === false) {

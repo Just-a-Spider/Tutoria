@@ -68,7 +68,6 @@ class LoginView(APIView):
         return authenticate_user(user, password)
 
 class LogoutView(APIView):
-
     def get(self, request):
         response = Response({'detail': 'Logout successful'})
         response.delete_cookie('access_token')
@@ -85,7 +84,6 @@ class MeView(RetrieveAPIView):
         return user
 
 class RefreshTokenView(RetrieveAPIView):
-
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
         if not refresh_token:

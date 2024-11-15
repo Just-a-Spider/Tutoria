@@ -7,6 +7,8 @@ class APIKeyMiddleware():
         self.get_response = get_response
 
     def __call__(self, request):
+        if 'oauth' in request.path:
+            return self.get_response(request)
         if request.path.startswith('/api/'):
             api_key = request.headers.get('X-API-KEY')
             if api_key != settings.API_KEY:

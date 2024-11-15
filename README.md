@@ -71,3 +71,11 @@ Y para hacer los tests de los websockets
 ```bash
 pytest
 ```
+
+# Pasos para replicar el frontend
+
+```bash
+cd client
+npm i
+ng serve
+```

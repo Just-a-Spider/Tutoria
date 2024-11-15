@@ -37,6 +37,10 @@ export class AuthComponent {
     });
   }
 
+  googleLogin() {
+    this.authService.googleLogin();
+  }
+
   toggle() {
     this.toggleForm = !this.toggleForm;
     this.messages = [];

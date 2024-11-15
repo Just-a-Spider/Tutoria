@@ -42,6 +42,7 @@ def login_success_response(user):
         httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
     )
+    print(response)
     return response
 
 def authenticate_user(user, password):

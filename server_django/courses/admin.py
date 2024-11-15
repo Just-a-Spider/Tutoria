@@ -23,10 +23,10 @@ class FacultyAdmin(admin.ModelAdmin):
 
 @admin.register(models.Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'faculty')
+    list_display = ('name', 'faculty', 'semester')
     search_fields = ('name',)
     fieldsets = (
-        (None, {'fields': ('name', 'faculty')}),
+        (None, {'fields': ('name', 'faculty', 'semester')}),
     )
     inlines = [CourseStudentsInline, CourseTutorsInline, CourseTryOutsInline]
 

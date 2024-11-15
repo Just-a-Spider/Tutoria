@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-chat-box',
+  selector: 'ui-chat-box',
   templateUrl: './chat-box.component.html',
   styleUrl: './chat-box.component.scss'
 })
