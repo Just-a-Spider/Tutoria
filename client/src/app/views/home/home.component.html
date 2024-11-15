@@ -1,12 +1,13 @@
 <div class="flex flex-column gap-2">
   <ui-header />
-  <div class="flex w-full">
+  <div class="flex flex-row">
     <div class="col-2">
       <h3>Barra Lateral</h3>
       <ui-side-bar />
     </div>
-    <div class="col-8 text-center">
+    <div class="col-10 text-center">
       <h3>Contenido</h3>
+      <router-outlet />
     </div>
   </div>
 </div>

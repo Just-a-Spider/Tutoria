@@ -1,36 +1,28 @@
 <div class="card flex justify-content-center">
   <p-accordion [activeIndex]="[]" multiple="true" class="w-full">
-    <p-accordionTab header="Mi Cuenta">
-      <div class="flex flex-column">
-        <p>Código de Estudiante</p>
-        {{ user.username }}
-        <p-divider />
-        <p>Correo</p>
-        {{ user.email }}
-        <p-divider />
-      </div>
-      <p-button
-        label="Cerrar Sesión"
-        icon="pi pi-sign-out"
-        iconPos="left"
-        severity="warning"
-        styleClass="w-full"
-        (click)="logout()"
-      />
-    </p-accordionTab>
-    <p-accordionTab header="Mis Cursos">
-      @for (course of myCourses; track course.id) {
-      <div class="flex flex-column">
-        <p-button label="{{ course.name }}" styleClass="w-full mb-3" />
-      </div>
-      }
-    </p-accordionTab>
-    <p-accordionTab header="Todos los Cursos">
+    <p-accordionTab header="Ranking General"></p-accordionTab>
+    <p-accordionTab header="Cursos de Carrera">
       @for (course of allCourses; track course.id) {
       <div class="flex flex-column">
-        <p-button label="{{ course.name }}" styleClass="w-full mb-3" />
+        <p-button
+          label="{{ course.name }}"
+          styleClass="w-full mb-3"
+          (click)="seeCourse(course.id!.toString())"
+        />
       </div>
       }
     </p-accordionTab>
+    <p-accordionTab header="Cursos Inscritos">
+      @for (course of myCourses; track course.id) {
+      <div class="flex flex-column">
+        <p-button
+          label="{{ course.name }}"
+          styleClass="w-full mb-3"
+          (click)="seeCourse(course.id!.toString())"
+        />
+      </div>
+      }
+    </p-accordionTab>
+    <p-accordionTab header="Sesiones Programadas"> </p-accordionTab>
   </p-accordion>
 </div>

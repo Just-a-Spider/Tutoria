@@ -1,0 +1,17 @@
+<div class="flex flex-column gap-2 border-2">
+  <div class="flex flex-row justify-content-center gap-8">
+    <h3>{{ courseData.name }}</h3>
+    <h3>
+      Estudiantes <br />
+      {{ courseData.students }}
+    </h3>
+  </div>
+  <div class="flex justify-content-center w-full gap-8">
+    <div class="col-8 border-2">
+      <course-posts />
+    </div>
+    <div class="col-2 border-2">
+      <course-ranking />
+    </div>
+  </div>
+</div>

@@ -15,6 +15,7 @@ export class SideBarComponent implements OnInit {
   myCourses: SimpleCourse[] = [];
   allCourses: SimpleCourse[] = [];
 
+  selectedCourseId: string = '';
 
   constructor(
     private authService: AuthService,
@@ -46,9 +47,7 @@ export class SideBarComponent implements OnInit {
   getCourses() {
     this.coursesService.getMyCourses().subscribe({
       next: (data: any) => {
-        console.log(data);
         this.myCourses = data.results;
-
       },
       error: (error) => {
         console.error(error);
@@ -56,8 +55,22 @@ export class SideBarComponent implements OnInit {
     });
     this.coursesService.getAllCourses().subscribe({
       next: (data: any) => {
-        console.log(data);
         this.allCourses = data;
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
+  seeCourse(courseId: string) {
+    this.coursesService.getCourse(courseId).subscribe({
+      next: (data: any) => {
+        this.coursesService.setCurrentCourse(data);
+        // If the current route is not '/course', navigate to '/course'
+        if (window.location.pathname !== '/course') {
+          window.location.pathname = '/course';
+        }
       },
       error: (error) => {
         console.error(error);

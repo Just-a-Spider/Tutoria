@@ -32,6 +32,9 @@ import { AuthComponent } from './components/forms/auth/auth.component';
 import { HomeView } from './views/home/home.component';
 import { LandingView } from './views/landing/landing.component';
 import { ProfileView } from './views/profile/profile.component';
+import { CourseDetailComponent } from './components/courses/detail/detail.component';
+import { PostsComponent } from './components/courses/detail/posts/posts.component';
+import { RankingComponent } from './components/courses/detail/ranking/ranking.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +47,9 @@ import { ProfileView } from './views/profile/profile.component';
     HeaderComponent,
     NotificationsComponent,
     ProfileView,
+    CourseDetailComponent,
+    PostsComponent,
+    RankingComponent,
   ],
   imports: [
     BrowserModule,

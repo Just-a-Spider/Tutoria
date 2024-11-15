@@ -1,8 +1,11 @@
 export class SimpleCourse {
-    id?: number;
-    faculty?: string;
-    name?: string;
-    students?: number;
-    tutors?: string;
-    try_out_tutors?: number;
+  id?: number;
+  faculty?: string;
+  name?: string;
+}
+
+export class Course extends SimpleCourse {
+  students?: number;
+  tutors?: number;
+  try_out_tutors?: number;
 }
