@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+$primaryColor: #2f2aaf;
+$primaryDarkColor: #000249;
+$fontSize: 0.8rem;
+$buttonPadding: .4rem $fontSize;
+$inputTextFontSize: $fontSize;
+$cardTitleFontSize: 0.8rem;
+$cardContentPadding: 0;
+// $inputListBg: #1b1f92;
+// $inputListItemBorderRadius: 10px;
+// $inputListItemHoverBg: #015aa6;
+// $inputListHeaderBg: #015aa6;
+// $borderRadius: 1.2rem;
+// $cardShadow: 0;
+// $cardTitleFontSize: 1rem;
+// $cardSubtitleFontSize: 1rem;
+// $cardContentPadding: 0.1rem;
+$dividerColor: $primaryDarkColor;
+// $timelineHorizontalEventContentPadding: 0.5rem;
+// $timelineEventConnectorSize: 4px;
+// $timelineEventColor: $primaryDarkColor;
+// $panelHeaderPadding: 0;
+// $shade600: #ebf7fc; //text secondary color
+// $shade700: #ebf7fc; //text color
+// $dialogHeaderBg: transparent;
+// $dialogHeaderTextColor: $shade700;
+// $dialogHeaderPadding: 0;
+// $dialogContentPadding: 0;
+$tabviewNavBorderWidth: 0 0 2px 0;
+$tabviewHeaderSpacing: 0.2rem;
+$fileUploadContentPadding: 0;
+$fileUploadProgressBarHeight: 0;
+
+
+@import "primeicons/primeicons.css";
+@import "../node_modules/primeng/resources/primeng.min.css";
+@import "../node_modules/primeng-sass-theme/themes/lara/lara-light/indigo/theme.scss";
+@import "primeflex/primeflex.css";
+
+body {
+  overflow: hidden; /* Prevent the main container from scrolling */
+}
