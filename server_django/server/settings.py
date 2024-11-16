@@ -68,7 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.postgres', # new
+    # 'django.contrib.postgres', # new
     'django.contrib.staticfiles',
 
     # Third party apps
@@ -134,7 +134,7 @@ ASGI_APPLICATION = 'server.asgi.application'
 if DEBUG:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': os.getenv('DB_ENGINE'),
             'USER': os.getenv('DB_USER'),
             'PASSWORD': os.getenv('DB_PASSWORD'),
             'NAME': os.getenv('DB_NAME'),
@@ -155,14 +155,21 @@ else:
 # Channels
 REDIS_URL = os.getenv('REDIS_URL')
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [REDIS_URL],
+if REDIS_URL == '' or REDIS_URL is None:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        }
+    }
+else:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                'hosts': [REDIS_URL],
+            },
         },
-    },
-}
+    }
 
 if 'test' in sys.argv:
     CHANNEL_LAYERS = {

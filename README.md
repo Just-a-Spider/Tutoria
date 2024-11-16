@@ -21,6 +21,7 @@ cd server_django/
 Luego de crear el entorno y activarlo, toca crear tu archivo ".env"
 ```bash
 # Database, rellena de acuerdo a los datos que usen
+DB_ENGINE="django.db.backends.mysql"
 DB_USER=""
 DB_PASSWORD=""
 DB_NAME=""
@@ -32,7 +33,7 @@ GOOGLE_OAUTH2_KEY=""
 GOOGLE_OAUTH2_SECRET=""
 
 # Redis
-REDIS_URL="redis://localhost:6379" # O el puerto que usen
+REDIS_URL="redis://localhost:6379" # O el puerto que usen, dejar en "" si para manejar en memoria
 
 # Email, Para esto tienen que sacar credenciales de google(again). Pueden buscarlo en la Docu
 # de Django creo
