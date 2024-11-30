@@ -18,12 +18,19 @@ def set_token_cookie(token, key=None):
     )
     return response
 
-def login_success_response(user):
+def login_success_response(user, mobile=False):
     refresh = CustomTokenObtainPairSerializer.get_token(user)
     access_token = refresh.access_token
     refresh_token = str(refresh)
     user.last_login = timezone.now()
     user.save()
+
+    if mobile:
+        mobile_response = Response({
+            'access_token': str(access_token),
+            'refresh_token': refresh_token,
+        }, status=status.HTTP_200_OK)
+        return mobile_response
 
     response = Response({'detail': 'Login successful'})
     response.set_cookie(
@@ -42,13 +49,12 @@ def login_success_response(user):
         httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
     )
-    print(response)
     return response
 
-def authenticate_user(user, password):
+def authenticate_user(user, password, mobile=False):
     if not user.check_password(password) or not user.is_active:
         return Response({'detail': 'Credenciales Incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
-    return login_success_response(user)
+    return login_success_response(user, mobile)
 
 def refresh_jwt_token(request):
     refresh_token = request.COOKIES.get('refresh_token')

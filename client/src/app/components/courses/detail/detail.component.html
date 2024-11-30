@@ -1,16 +1,56 @@
-<div class="flex flex-column gap-2 border-2">
-  <div class="flex flex-row justify-content-center gap-8">
-    <h3>{{ courseData.name }}</h3>
-    <h3>
-      Estudiantes <br />
-      {{ courseData.students }}
-    </h3>
+<div *ngIf="gotCourse" class="flex flex-column gap-2 h-full">
+  <div class="flex flex-column justify-content-center align-items-center">
+    <p-chip
+      [label]="courseData.name! | capitalize"
+      styleClass="m-1 text-center text-2xl bg-transparent"
+    />
+    <div class="flex flex-row gap-2">
+      <p-button
+        [label]="mode === 'student' ? 'Inscribirse' : 'Ser Tutor'"
+        [severity]="themeService.buttonStyle.severity"
+        [disabled]="
+          mode === 'student' ? courseData.is_student : isTutor
+        "
+        rounded="true"
+        raised="true"
+        styleClass="w-8rem mb-3"
+        (click)="onEnroll()"
+      />
+      <p-button
+        [label]="mode === 'student' ? 'Retirarse' : 'Dejar de ser Tutor'"
+        [severity]="themeService.buttonStyle.severity"
+        [disabled]="
+          mode === 'student' ? !courseData.is_student : !isTutor
+        "
+        rounded="true"
+        raised="true"
+        styleClass="w-10rem mb-3"
+        (click)="onUnenroll()"
+      />
+    </div>
+    <div class="flex flex-row justify-content-between align-items-center gap-3">
+      <p-chip
+        [label]="courseData.students!.toString()"
+        icon="pi pi-book"
+        styleClass="bg-cyan-500"
+      />
+      <p-chip
+        [label]="courseData.tutors!.toString()"
+        icon="pi pi-graduation-cap"
+        styleClass="bg-orange-400"
+      />
+      <p-chip
+        [label]="courseData.try_out_tutors!.toString()"
+        icon="pi pi-spin pi-spinner-dotted"
+        styleClass="bg-primary-500"
+      />
+    </div>
   </div>
   <div class="flex justify-content-center w-full gap-8">
-    <div class="col-8 border-2">
-      <course-posts />
+    <div class="col-8">
+      <course-posts [courseId]="courseData.id!.toString()" />
     </div>
-    <div class="col-2 border-2">
+    <div class="col-2">
       <course-ranking />
     </div>
   </div>

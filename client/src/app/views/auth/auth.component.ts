@@ -1,20 +1,24 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Message } from 'primeng/api';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })
-export class AuthComponent {
+export class AuthView {
   toggleForm: boolean = false;
   loginFormGroup!: FormGroup;
   registerFormGroup!: FormGroup;
   messages: Message[] = [];
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loginFormGroup = new FormGroup({
@@ -50,7 +54,7 @@ export class AuthComponent {
     if (this.loginFormGroup.valid) {
       this.authService.login(this.loginFormGroup.value).subscribe({
         next: () => {
-          window.location.href = '/home';
+          window.location.href = '';
         },
         error: (error) => {
           this.messages = [
@@ -63,7 +67,7 @@ export class AuthComponent {
 
   forgotPassword() {
     // Redirect to forgot password page
-    window.location.href = '/reset-password';
+    this.router.navigate(['/reset-password']);
   }
 
   register() {

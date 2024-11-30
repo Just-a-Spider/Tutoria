@@ -1,0 +1,82 @@
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center gap-2">
+      <p-avatar
+        [image]="
+          post!.pfp_url
+            ? hostUrl + post!.pfp_url
+            : 'https://via.placeholder.com/150'
+        "
+        size="xlarge"
+        shape="circle"
+        styleClass="border-2 border-circle"
+      />
+      @if (isRequestHelpPost(post)) {
+      <span class="font-bold"> {{ post!.student }} </span>
+      } @else {
+      <span class="font-bold"> {{ post!.tutor }} </span>}
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-start align-items-start">
+      <h4 class="font-bold">Comentarios</h4>
+    </div>
+    <div class="flex flex-row align-items-center justify-content-between gap-3">
+      <!-- Input text for the Commnet -->
+      <input
+        pInputText
+        placeholder="Escribe un comentario"
+        class="w-full"
+        [(ngModel)]="comment"
+      />
+      <p-button
+        label="Enviar"
+        icon="pi pi-send"
+        rounded="true"
+        (click)="sendComment()"
+      />
+    </div>
+    <!-- Comments Box -->
+    @if (comments.length === 0) {
+    <div class="flex justify-content-start align-items-start">
+      <p>¡No hay comentarios disponibles!</p>
+    </div>
+    } @else {
+    <p-scrollPanel
+      [style]="{ height: '300px', width: '100%', 'margin-top': '1rem' }"
+    >
+      @for (comment of comments; track comment.id) {
+      <div
+        class="flex flex-column w-full justify-content-start align-items-start gap-0 mt-3 border-2 border-dotted border-round p-2"
+      >
+        <div
+          class="flex flex-row justify-content-start align-items-center gap-4"
+        >
+          <p-avatar
+            [image]="
+              comment.pfp_url
+                ? hostUrl + comment.pfp_url
+                : 'https://via.placeholder.com/150'
+            "
+            size="large"
+            shape="circle"
+            styleClass="border-2 border-circle"
+          />
+          <span class="font-bold">{{ comment.user }}</span>
+          <p>{{ comment.created_at | date : "MMM d, y, h:mm:ss a" }}</p>
+        </div>
+        <p>{{ comment.content }}</p>
+      </div>
+      }
+    </p-scrollPanel>
+    }
+  </ng-template>
+  <ng-template pTemplate="icons">
+    <button class="p-panel-header-icon p-link mr-2">
+      <span class="pi pi-cog"></span>
+    </button>
+  </ng-template>
+  @if (post!.description != null){
+  <p class="m-0 flex justify-content-start">{{ post!.description! }}</p>
+  }
+</p-panel>

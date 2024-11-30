@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from server.utils.test_base_test import BaseTest
 from courses.models import Faculty, Course
-from posts.models import OfferHelpPost, RequestHelpPost
+from server_django.posts.models import OfferHelpPost, RequestHelpPost
 
 class PostTests(BaseTest):
     def setUp(self):

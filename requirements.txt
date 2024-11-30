@@ -25,6 +25,7 @@ idna==3.7
 incremental==24.7.2
 iniconfig==2.0.0
 msgpack==1.0.8
+mysqlclient==2.2.6
 numpy==2.1.1
 oauthlib==3.2.2
 packaging==24.1

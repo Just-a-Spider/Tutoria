@@ -1,8 +1,6 @@
 from .serializers import *
 from ..models import StudentProfile, TutorProfile
 from rest_framework import viewsets
-from server.middleware.auth import CustomJWTAuthentication
-from rest_framework.permissions import IsAuthenticated
 
 class StudentProfileViewSet(viewsets.ModelViewSet):
     serializer_class = StudentProfileSerializer

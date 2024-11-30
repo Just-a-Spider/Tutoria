@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { Course } from '../../classes/course.class';
 
 @Injectable({
@@ -10,16 +10,7 @@ import { Course } from '../../classes/course.class';
 export class CoursesService {
   private apiUrl = environment.apiUrl + 'courses/';
 
-  private currentCourseSubject: BehaviorSubject<Course>;
-  currentCourse$: Observable<Course>;
-
-  constructor(private http: HttpClient) {
-    const savedCourse = localStorage.getItem('currentCourse');
-    this.currentCourseSubject = new BehaviorSubject<Course>(
-      savedCourse ? JSON.parse(savedCourse) : new Course()
-    );
-    this.currentCourse$ = this.currentCourseSubject.asObservable();
-  }
+  constructor(private http: HttpClient) {}
 
   getMyCourses() {
     return this.http.get(this.apiUrl, { withCredentials: true });
@@ -37,8 +28,33 @@ export class CoursesService {
     });
   }
 
-  setCurrentCourse(course: Course) {
-    this.currentCourseSubject.next(course);
-    localStorage.setItem('currentCourse', JSON.stringify(course));
+  enrollCourse(id: string, mode: string) {
+    if (mode === 'student') {
+      return this.http.post(
+        `${this.apiUrl}${id}/students/`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+    }
+    return this.http.post(
+      `${this.apiUrl}${id}/tutors/`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  unenrollCourse(id: string, mode: string) {
+    if (mode === 'student') {
+      return this.http.delete(`${this.apiUrl}${id}/students/`, {
+        withCredentials: true,
+      });
+    }
+    return this.http.delete(`${this.apiUrl}${id}/tutors/`, {
+      withCredentials: true,
+    });
   }
 }

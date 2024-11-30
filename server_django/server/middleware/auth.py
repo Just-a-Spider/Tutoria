@@ -6,8 +6,13 @@ from server.utils.user_utils import set_token_cookie
 
 class CustomJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
-        access_token = request.COOKIES.get('access_token')
-        refresh_token = request.COOKIES.get('refresh_token')
+        is_mobile = request.headers.get('Auth-X-Mobile', 'False') == 'True'
+        if is_mobile:
+            access_token = request.headers.get('Authorization')
+            refresh_token = request.headers.get('Refresh')
+        else:
+            access_token = request.COOKIES.get('access_token')
+            refresh_token = request.COOKIES.get('refresh_token')
 
         if not access_token:
             return None

@@ -33,7 +33,7 @@ if not DEBUG:
     'https://tutoria-3jn8.onrender.com',
     'http://tutoria-3jn8.onrender.com',
     'http://localhost:4200',
-]
+    ]
 else:
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOW_CREDENTIALS = True
@@ -41,6 +41,8 @@ else:
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
+    'refresh', # To refresh the token from mobile
+    'auth-x-mobile', # To know if the request is from mobile
     'x-api-key',  # Add the X-API-KEY header here
     'x-requested-with',
     'accept',
@@ -103,8 +105,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',  # Google Auth
-    'server.middleware.api_key.APIKeyMiddleware',  # API Key
 ]
+
+if os.getenv('EAK', 'False') == 'True':
+    MIDDLEWARE.append(
+        'server.middleware.api_key.APIKeyMiddleware',  # API Key
+    )
 
 ROOT_URLCONF = 'server.urls'
 
@@ -243,7 +249,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 5,
 }
 
 # Simple JWT settings

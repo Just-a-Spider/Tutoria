@@ -27,8 +27,8 @@ class GetAllCoursesAPIView(ListAPIView):
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CourseModelSerializer
     lookup_field = 'id'
-    pagination_class = LimitOffsetPagination
 
+    # Integrated Methods
     def get_queryset(self):
         student_courses = models.Course.objects.filter(
             students__user=self.request.user
@@ -41,10 +41,12 @@ class CourseViewSet(viewsets.ModelViewSet):
             student_courses.union(tutor_courses)
 
         return student_courses
-
-    def get_user_profile(self, user, profile_model):
-        """Helper method to get user profile by user_id."""
-        return profile_model.objects.get(user=user)
+    
+    def get_object(self):
+        all_courses = models.Course.objects.all()
+        course_id = self.kwargs.get('id')
+        course = all_courses.filter(id=course_id).first()
+        return course
     
     def perform_create(self, serializer):
         if self.request.user.is_superuser:
@@ -55,17 +57,70 @@ class CourseViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             serializer.save()
         raise PermissionDenied()
+    
+    # Helper Methods
+    def get_user_profile(self, user, profile_model):
+        """Helper method to get user profile by user_id."""
+        return profile_model.objects.get(user=user)
 
-    @action(detail=True, methods=['get'])
+    # Actions
+    @action(detail=True, methods=['get', 'post', 'delete'])
     def students(self, request, *args, **kwargs):
         course = self.get_object()
+        user = request.user
+        student_profile = self.get_user_profile(user, p_models.StudentProfile)
+
+        if request.method == 'DELETE':
+            course.students.remove(student_profile)
+            return Response(
+                {'message': 'Student removed successfully'}, 
+                status=status.HTTP_204_NO_CONTENT
+            )
+            
+        if request.method == 'POST':
+            course.students.add(student_profile)
+            return Response(
+                {'message': 'Student added successfully'}, 
+                status=status.HTTP_201_CREATED
+            )
+        
         students = course.students.all()
         serializer = p_serializers.StudentProfileSerializer(students, many=True)
         return Response(serializer.data)
     
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get', 'post', 'delete'])
     def tutors(self, request, *args, **kwargs):
         course = self.get_object()
+        user = request.user
+        tutor_profile = self.get_user_profile(user, p_models.TutorProfile)
+
+        if request.method == 'DELETE':
+            if course.tutortryouts_set.filter(tutor=tutor_profile).exists():
+                course.tutortryouts_set.filter(tutor=tutor_profile).delete()
+                return Response(
+                    {'message': 'You have successfully removed your application'}, 
+                    status=status.HTTP_204_NO_CONTENT
+                )
+            course.tutors.remove(tutor_profile)
+            return Response(
+                {'message': 'Tutor removed successfully'}, 
+                status=status.HTTP_204_NO_CONTENT
+            )
+        
+        if request.method == 'POST':
+            if course.tutors.filter(user=user).exists() or course.tutortryouts_set.filter(tutor=tutor_profile).exists():
+                return Response(
+                    {'message': 'You are already a tutor for this course'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Create a TutorTryOut instance
+            tutor_tryout = models.TutorTryOuts.objects.create(tutor=tutor_profile, course=course)
+            tutor_tryout.save()
+            return Response(
+                {'message': 'You have successfully applied to be a tutor'}, 
+                status=status.HTTP_201_CREATED
+            )
+
         tutors = course.tutors.all()
         serializer = p_serializers.TutorProfileSerializer(tutors, many=True)
         return Response(serializer.data)
@@ -76,57 +131,3 @@ class CourseViewSet(viewsets.ModelViewSet):
         try_out_tutors = course.tutortryouts_set.all()
         serializer = serializers.TryOutTutorModelSerializer(try_out_tutors, many=True)
         return Response(serializer.data)
-
-    @action(detail=True, methods=['post'])
-    def add_student(self, request, *args, **kwargs):
-        course = self.get_object()
-        user = request.user
-        student_profile = self.get_user_profile(user, p_models.StudentProfile)
-        course.students.add(student_profile)
-        return Response(
-            {'message': 'Student added successfully'}, 
-            status=status.HTTP_201_CREATED
-        )
-
-    @action(detail=True, methods=['delete'])
-    def remove_student(self, request, *args, **kwargs):
-        course = self.get_object()
-        user = request.user
-        student_profile = self.get_user_profile(user, p_models.StudentProfile)
-        course.students.remove(student_profile)
-        return Response(
-            {'message': 'Student removed successfully'}, 
-            status=status.HTTP_204_NO_CONTENT
-        )
-
-    @action(detail=True, methods=['post'])
-    def add_tutor(self, request, *args, **kwargs):
-        course = self.get_object()
-        user = request.user
-        tutor_profile = self.get_user_profile(user, p_models.TutorProfile)
-        # Return 400 if the tutor is already a tutor for the course
-        if course.tutors.filter(user=user).exists() or course.tutortryouts_set.filter(tutor=tutor_profile).exists():
-            return Response(
-                {'message': 'You are already a tutor for this course'}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        # Create a TutorTryOut instance
-        tutor_tryout = models.TutorTryOuts.objects.create(tutor=tutor_profile, course=course)
-        tutor_tryout.save()
-        return Response(
-            {'message': 'You have successfully applied to be a tutor'}, 
-            status=status.HTTP_201_CREATED
-        )
-
-    @action(detail=True, methods=['delete'])
-    def remove_tutor(self, request, *args, **kwargs):
-        course = self.get_object()
-        user = request.user
-        tutor_profile = self.get_user_profile(user, p_models.TutorProfile)
-        # Remove the TutorTryOut instance
-        models.TutorTryOuts.objects.get(tutor=tutor_profile, course=course).delete()
-        course.tutors.remove(tutor_profile)
-        return Response(
-            {'message': 'Tutor removed successfully'}, 
-            status=status.HTTP_204_NO_CONTENT
-        )

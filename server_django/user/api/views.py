@@ -57,6 +57,7 @@ class LoginView(APIView):
             return Response({'detail': 'Datos de entrada no válidos'}, status=status.HTTP_400_BAD_REQUEST)
         email_username = serializer.validated_data.get('email_username')
         password = serializer.validated_data.get('password')
+        is_mobile = request.headers.get('Auth-X-Mobile', 'False') == 'True'
 
         try:
             if '@udh.edu.pe' in email_username:
@@ -65,7 +66,7 @@ class LoginView(APIView):
                 user = User.objects.get(username=email_username)
         except User.DoesNotExist:
             return Response({'detail': 'Usuario no Encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        return authenticate_user(user, password)
+        return authenticate_user(user, password, is_mobile)
 
 class LogoutView(APIView):
     def get(self, request):

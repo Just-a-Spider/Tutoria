@@ -1,0 +1,30 @@
+<div class="flex flex-column gap-2">
+  <label for="title">Título</label>
+  <input
+    pInputText
+    id="title"
+    aria-describedby="title-help"
+    [(ngModel)]="postData.title"
+  />
+  <label for="subject">Materia</label>
+  <input
+    pInputText
+    id="subject"
+    aria-describedby="subject-help"
+    [(ngModel)]="postData.subject"
+  />
+  <label for="description">Descripción</label>
+  <textarea
+    id="description"
+    pInputTextarea
+    aria-describedby="description-help"
+    [(ngModel)]="postData.description"
+  ></textarea>
+  <small id="description-help">Máximo 500 caracteres</small>
+  <p-button
+    label="Crear Post"
+    styleClass="p-button-raised p-button-rounded"
+    [severity]="mode === 'student' ? 'info' : 'warning'"
+    (click)="onCreatePost()"
+  />
+</div>

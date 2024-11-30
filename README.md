@@ -7,6 +7,7 @@
 > [!NOTE]
 > Los comandos los dejaré para Windows, I do recommend usar el CLI de CMD no Powershell
 
+Lo he probado en 2 PCs con Windows, 1 Linux Debian y un Linux Arch. Si no les corre ya F
 ```bash
 py -m venv venv
 ./venv/Scrips/activate
@@ -19,33 +20,13 @@ cd server_django/
 > Que quede al mismo nivel que manage.py, osea en server_django/
 
 Luego de crear el entorno y activarlo, toca crear tu archivo ".env"
-```bash
-# Database, rellena de acuerdo a los datos que usen
-DB_ENGINE="django.db.backends.mysql"
-DB_USER=""
-DB_PASSWORD=""
-DB_NAME=""
-DB_HOST=""
-DB_PORT=""
+Para esto simplemente es Ctrl+C y Ctrl+V de ".env.example" y completar los campos que dicen <completar>
 
-# Para la autenticación con Google. Revisen info de las apis y credenciales de Google
-GOOGLE_OAUTH2_KEY=""
-GOOGLE_OAUTH2_SECRET=""
-
-# Redis
-REDIS_URL="redis://localhost:6379" # O el puerto que usen, dejar en "" si para manejar en memoria
-
-# Email, Para esto tienen que sacar credenciales de google(again). Pueden buscarlo en la Docu
-# de Django creo
-EMAIL_HOST_USER=""
-EMAIL_HOST_PASSWORD=""
-```
 ## Migraciones
 > [!IMPORTANT]
 > No omitan esto
 
 ```bash
-py manage.py makemigrations
 py manage.py migrate
 ```
 

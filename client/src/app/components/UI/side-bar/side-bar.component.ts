@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { filter, take } from 'rxjs/operators';
-import { User } from '../../../classes/user.class';
-import { AuthService } from '../../../services/auth.service';
-import { CoursesService } from '../../../services/courses/courses.service';
 import { SimpleCourse } from '../../../classes/course.class';
+import { CoursesService } from '../../../services/courses/courses.service';
+import { ThemeService } from '../../../services/misc/theme.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ui-side-bar',
@@ -11,43 +10,33 @@ import { SimpleCourse } from '../../../classes/course.class';
   styleUrls: ['./side-bar.component.scss'],
 })
 export class SideBarComponent implements OnInit {
-  user: User = new User();
   myCourses: SimpleCourse[] = [];
   allCourses: SimpleCourse[] = [];
+  mode: string = 'student';
 
   selectedCourseId: string = '';
 
   constructor(
-    private authService: AuthService,
-    private coursesService: CoursesService
+    private router: Router,
+    private coursesService: CoursesService,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit() {
-    this.getUser();
+    this.themeService.profileMode$.subscribe((mode) => {
+      this.mode = mode;
+    });
     this.getCourses();
   }
 
-  getUser() {
-    this.authService.getUser();
-    this.authService.user$
-      .pipe(
-        filter((user) => user !== null), // Filter out null values
-        take(1) // Ensure the subscription happens only once
-      )
-      .subscribe({
-        next: (user) => {
-          this.user = user;
-        },
-        error: (error) => {
-          console.error(error);
-        },
-      });
+  refresh() {
+    this.getCourses();
   }
 
   getCourses() {
     this.coursesService.getMyCourses().subscribe({
       next: (data: any) => {
-        this.myCourses = data.results;
+        this.myCourses = data;
       },
       error: (error) => {
         console.error(error);
@@ -64,21 +53,6 @@ export class SideBarComponent implements OnInit {
   }
 
   seeCourse(courseId: string) {
-    this.coursesService.getCourse(courseId).subscribe({
-      next: (data: any) => {
-        this.coursesService.setCurrentCourse(data);
-        // If the current route is not '/course', navigate to '/course'
-        if (window.location.pathname !== '/course') {
-          window.location.pathname = '/course';
-        }
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
-  }
-
-  logout() {
-    this.authService.logout();
+    this.router.navigate(['/course'], { queryParams: { id: courseId } });
   }
 }

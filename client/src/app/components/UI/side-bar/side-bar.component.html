@@ -1,28 +1,43 @@
-<div class="card flex justify-content-center">
-  <p-accordion [activeIndex]="[]" multiple="true" class="w-full">
-    <p-accordionTab header="Ranking General"></p-accordionTab>
-    <p-accordionTab header="Cursos de Carrera">
+<div class="card flex flex-column gap-2 justify-content-center">
+  <!-- Refresh Button -->
+  <p-button
+    label="Recargar"
+    icon="pi pi-refresh"
+    styleClass="w-full"
+    (click)="refresh()"
+  />
+  <p-accordion
+    [activeIndex]="[2]"
+    multiple="true"
+    class="w-full"
+    expandIcon="pi pi-plus"
+    collapseIcon="pi pi-minus"
+  >
+    <p-accordionTab header="Ranking General" iconPos="end"></p-accordionTab>
+    <p-accordionTab header="Cursos de Carrera" iconPos="end">
       @for (course of allCourses; track course.id) {
       <div class="flex flex-column">
         <p-button
-          label="{{ course.name }}"
+          label="{{ course.name! | capitalize }}"
           styleClass="w-full mb-3"
           (click)="seeCourse(course.id!.toString())"
         />
       </div>
       }
     </p-accordionTab>
-    <p-accordionTab header="Cursos Inscritos">
+    <p-accordionTab header="Cursos Inscritos" iconPos="end">
       @for (course of myCourses; track course.id) {
       <div class="flex flex-column">
         <p-button
-          label="{{ course.name }}"
+          label="{{ course.name! | capitalize }}"
           styleClass="w-full mb-3"
+          [severity]="mode === 'student' ? 'info' : 'warning'"
           (click)="seeCourse(course.id!.toString())"
         />
       </div>
       }
     </p-accordionTab>
-    <p-accordionTab header="Sesiones Programadas"> </p-accordionTab>
+    <p-accordionTab header="Sesiones Programadas" iconPos="end">
+    </p-accordionTab>
   </p-accordion>
 </div>

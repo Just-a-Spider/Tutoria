@@ -1,1 +1,212 @@
-<p>posts works!</p>
+<div class="flex flex-row w-full justify-content-between">
+  <div class="flex col-1 align-items-start justify-content-center">
+    <p-button
+      label="Crear Post"
+      raised="true"
+      rounded="true"
+      [severity]="themeService.buttonStyle.severity"
+      (click)="dialogHeader = 'Crear Publicación'; showDialog = true"
+      styleClass="text-center text-sm"
+    />
+  </div>
+  <div class="col-10 border-2 border-dotted border-round">
+    <p-tabView (activeIndexChange)="onTabChange($event)">
+      <!-- Request Help Posts -->
+      <p-tabPanel header="Pedir Ayuda">
+        <div
+          class="flex flex-row gap-2 justify-content-center align-items-center mb-3"
+        >
+          <input pInputText placeholder="Buscar Post" />
+          <p-button
+            label="Buscar"
+            icon="pi pi-search"
+            raised="true"
+            rounded="true"
+          />
+        </div>
+        <div
+          *ngIf="requestHelpPage.results.length === 0"
+          class="flex flex-row justify-content-center"
+        >
+          <p>¡No hay posts disponibles!</p>
+        </div>
+        <div *ngIf="requestHelpPage.results.length > 0">
+          <p-table
+            [columns]="columns"
+            [value]="requestHelpPage.results"
+            [paginator]="true"
+            [rows]="10"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of columns">
+                  {{ col.header }}
+                </th>
+                <th>Acciones</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns">
+                  <span *ngIf="col.field === 'created_at'">{{
+                    rowData[col.field] | date
+                  }}</span>
+                  <span *ngIf="col.field !== 'created_at'">{{
+                    rowData[col.field]
+                  }}</span>
+                </td>
+                <td>
+                  <p-button
+                    raised="true"
+                    rounded="true"
+                    icon="pi pi-eye"
+                    (click)="showPost(rowData['id'], 'request')"
+                  />
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+      <!-- Offer Help Posts -->
+      <p-tabPanel header="Ofrecer Ayuda">
+        <div
+          class="flex flex-row gap-2 justify-content-center align-items-center mb-3"
+        >
+          <input pInputText placeholder="Buscar Post" />
+          <p-button
+            label="Buscar"
+            icon="pi pi-search"
+            styleClass="p-button-raised p-button-rounded"
+          />
+        </div>
+        <div
+          *ngIf="offerHelpPage.results.length === 0"
+          class="flex flex-row justify-content-center"
+        >
+          <p>¡No hay posts disponibles!</p>
+        </div>
+        <div *ngIf="offerHelpPage.results.length > 0">
+          <p-table
+            [columns]="columns"
+            [value]="offerHelpPage.results"
+            [paginator]="true"
+            [rows]="10"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of columns">
+                  {{ col.header }}
+                </th>
+                <th>Acciones</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns">
+                  <span *ngIf="col.field === 'created_at'">{{
+                    rowData[col.field] | date
+                  }}</span>
+                  <span *ngIf="col.field !== 'created_at'">{{
+                    rowData[col.field]
+                  }}</span>
+                </td>
+                <td>
+                  <p-button
+                    raised="true"
+                    rounded="true"
+                    icon="pi pi-eye"
+                    (click)="showPost(rowData['id'], 'offer')"
+                  />
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+      <!-- My Posts -->
+      <p-tabPanel header="Mis Posts">
+        <div
+          class="flex flex-row gap-2 justify-content-center align-items-center mb-3"
+        >
+          <input pInputText placeholder="Buscar Post" />
+          <p-button
+            label="Buscar"
+            icon="pi pi-search"
+            styleClass="p-button-raised p-button-rounded"
+          />
+        </div>
+        <div
+          *ngIf="myPostsPage.results.length === 0"
+          class="flex flex-row justify-content-center"
+        >
+          <p>¡No hay posts disponibles!</p>
+        </div>
+        <div *ngIf="myPostsPage.results.length > 0">
+          <p-table
+            [columns]="myColumns"
+            [value]="myPostsPage.results"
+            [paginator]="true"
+            [rows]="10"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of myColumns">
+                  {{ col.header }}
+                </th>
+                <th>Acciones</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="myColumns">
+              <tr>
+                <td *ngFor="let col of myColumns">
+                  <span *ngIf="col.field === 'created_at'">{{
+                    rowData[col.field] | date
+                  }}</span>
+                  <span *ngIf="col.field !== 'created_at'">{{
+                    rowData[col.field]
+                  }}</span>
+                </td>
+                <td>
+                  <div class="flex flex-row gap-2">
+                    <p-button
+                      raised="true"
+                      rounded="true"
+                      icon="pi pi-eye"
+                      (click)="showPost(rowData['id'], rowData['post_type'])"
+                    />
+                    <p-button
+                      raised="true"
+                      rounded="true"
+                      icon="pi pi-pencil"
+                      (click)="editPost(rowData)"
+                    />
+                    <p-button
+                      raised="true"
+                      rounded="true"
+                      icon="pi pi-trash"
+                      (click)="deletePost(rowData['id'], rowData['post_type'])"
+                    />
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+<p-dialog
+  [header]="dialogHeader"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+>
+  <ng-container *ngIf="dialogHeader === 'Crear Publicación'; else postDetail">
+    <create-post [mode]="mode" (postCreated)="createPost($event)"></create-post>
+  </ng-container>
+  <ng-template #postDetail>
+    <post-detail [post]="selectedPost"></post-detail>
+  </ng-template>
+</p-dialog>

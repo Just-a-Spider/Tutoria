@@ -1,13 +1,9 @@
-<div class="flex flex-column gap-2">
-  <ui-header />
-  <div class="flex flex-row">
-    <div class="col-2">
-      <h3>Barra Lateral</h3>
-      <ui-side-bar />
-    </div>
-    <div class="col-10 text-center">
-      <h3>Contenido</h3>
-      <router-outlet />
-    </div>
+<div class="flex flex-row h-full w-screen">
+  <p-scrollPanel [style]="{ width: '100%', height: '100%', padding: '1rem 1rem 0 1rem'}">
+    <ui-side-bar />
+  </p-scrollPanel>
+  <p-divider layout="vertical" styleClass="m-0 p-0 h-screen" />
+  <div class="col-10 text-center h-full">
+    <router-outlet />
   </div>
 </div>

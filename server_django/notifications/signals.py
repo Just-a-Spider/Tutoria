@@ -2,7 +2,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from posts import models
+from posts import models as p_models
+from . import models as noti_models
 
 def send_notfication_to_user(user, content):
     channel_layer = get_channel_layer()
@@ -13,34 +14,71 @@ def send_notfication_to_user(user, content):
     }
     async_to_sync(channel_layer.group_send)(user_channel, message)
 
-# For the RequestHelpPost model
-@receiver(post_save, sender=models.RequestHelpPost)
+def create_and_send_notification(noti_model, user, title, content, instance_id, subinstance_id=None):
+    # Create a new Notification according to the model
+    noti_model.objects.create(
+        title=title,
+        content=content,
+        instance_id=instance_id,
+        subinstance_id=subinstance_id,
+        user=user
+    )
+    # Send a notification to the user
+    send_notfication_to_user(user, content)
+
+# POSTS
+# RequestHelpPost
+@receiver(post_save, sender=p_models.RequestHelpPost)
 def send_notification_to_tutors(sender, instance, created, **kwargs):
     if created:
-        content = f'New help request by {instance.student.user.username}'
-        # Send a notification to the user
-        send_notfication_to_user(instance.student.user, content)
+        tutors = instance.course.tutors.all()
+        try_out_tutors = instance.course.tutortryouts_set.all()
+        content = f'Nueva petición de ayuda de {instance.student.user.username}'
+        title = 'Nueva petición de ayuda'
+        for tutor in tutors:
+            create_and_send_notification(noti_models.TutorNotification, tutor.user, title, content, instance.id)
+        for try_out_tutor in try_out_tutors:
+            create_and_send_notification(
+                noti_models.TutorNotification, 
+                try_out_tutor.tutor.user, 
+                title, 
+                content, 
+                instance.id
+            )
 
-# For the Comment model
-@receiver(post_save, sender=models.Comment)
-def send_notification_new_comment(sender, instance, created, **kwargs):
-    if created:
-        content = f'New comment by {instance.user.username} in post'
-        # Send a notification to the user
-        send_notfication_to_user(instance.user, content)
-
-# For the OfferHelpPost model
-@receiver(post_save, sender=models.OfferHelpPost)
+# OfferHelpPost
+@receiver(post_save, sender=p_models.OfferHelpPost)
 def send_notification_to_students(sender, instance, created, **kwargs):
     if created:
-        content = f'New offer help by {instance.tutor.user.username}'
-        # Send a notification to the user
-        send_notfication_to_user(instance.tutor.user, content)
+        students = instance.course.students.all()
+        content = f'Nuevo post del tutor {instance.tutor.user.username}'
+        title = 'Nuevo post de tutor'
+        for student in students:
+            create_and_send_notification(
+                noti_models.StudentNotification, 
+                student.user, 
+                title, 
+                content, 
+                instance.id
+            )
 
+#------------------------------------------------------------------------------
+
+# COMMENTS
 # For the Comment model
-@receiver(post_save, sender=models.Comment)
+@receiver(post_save, sender=p_models.Comment)
 def send_notification_new_comment(sender, instance, created, **kwargs):
     if created:
-        content = f'New comment by {instance.user.username} in post'
-        # Send a notification to the user
-        send_notfication_to_user(instance.user, content)
+        content = f'Nuevo comentario de {instance.user.username} en tu post {instance.post.title}'
+        title = 'Nuevo comentario'
+        noti_model = noti_models.StudentNotification if isinstance(
+            instance.post, p_models.RequestHelpPost
+        ) else noti_models.TutorNotification
+        create_and_send_notification(
+            noti_model, 
+            instance.post.student.user, 
+            title, 
+            content, 
+            instance.post.course.id,
+            instance.post.id
+        )

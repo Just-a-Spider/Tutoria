@@ -1,0 +1,6 @@
+@import "./common-variables.scss";
+
+$buttonHoverBg: $primaryDarkColor;
+$buttonHoverBorderColor: $primaryDarkColor;
+
+@import "../node_modules/primeng-sass-theme/themes/lara/lara-light/indigo/theme.scss";

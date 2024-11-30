@@ -5,7 +5,6 @@ from courses.models import Course, Faculty
 from profiles.models import StudentProfile, TutorProfile
 from django.db import transaction
 from django.utils import timezone
-from django.http import HttpResponse
 from user.api.serializers import CustomTokenObtainPairSerializer
 
 def login_success_response(user):

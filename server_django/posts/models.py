@@ -16,14 +16,22 @@ class BasePost(models.Model):
         abstract = True
 
 class Comment(models.Model):
+    # Own Data
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Post Reference
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.UUIDField()
     post = GenericForeignKey('content_type', 'object_id')
+
+    # Field to get the user's tutor or student profile picture
+    pfp_url = models.URLField(null=True, default=None)
+
+    # To be removed fields, perhaps needed for the future
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class RequestHelpPost(BasePost):
     subject = models.CharField(max_length=140)

@@ -1,0 +1,131 @@
+// Primeng theme
+$primaryColor: rgba(#2fbba0, 0.8);
+$primaryDarkColor: #2fbba0;
+
+// Font
+$fontSize: 0.8rem;
+
+// InputText
+$inputTextFontSize: $fontSize;
+
+// InputSwitch
+$inputSwitchSliderOnBg: #6f7070;
+$inputSwitchSliderOnHoverBg: #6f7070;
+$inputSwitchSliderOffBg: #edd17e;
+$inputSwitchSliderOffHoverBg: #edd17e;
+
+// Panel
+// $panelHeaderBg: $primaryDarkColor;
+
+// Buttons
+$buttonPadding: 0.4rem $fontSize;
+$buttonTextColor: #def7f9;
+$secondaryButtonTextColor: #def7f9;
+$warningButtonTextColor: #def7f9;
+$dangerButtonTextColor: #def7f9;
+$infoButtonTextColor: #def7f9;
+$successButtonTextColor: #def7f9;
+$helpButtonTextColor: #def7f9;
+$buttonHoverBg: $primaryDarkColor;
+$buttonHoverBorderColor: $primaryDarkColor;
+
+$secondaryButtonBg: #64748b !default;
+$secondaryButtonBorder: 1px solid #64748b !default;
+$secondaryButtonHoverBg: #475569 !default;
+$secondaryButtonTextHoverColor: $secondaryButtonTextColor !default;
+$secondaryButtonHoverBorderColor: #475569 !default;
+$secondaryButtonActiveBg: #334155 !default;
+$secondaryButtonTextActiveColor: $secondaryButtonTextColor !default;
+$secondaryButtonActiveBorderColor: #334155 !default;
+$secondaryButtonFocusShadow: 0 0 0 0.2rem #e2e8f0 !default;
+
+$infoButtonBg: #0ea5e9 !default;
+$infoButtonBorder: 1px solid #0ea5e9 !default;
+$infoButtonHoverBg: #0284c7 !default;
+$infoButtonTextHoverColor: $infoButtonTextColor !default;
+$infoButtonHoverBorderColor: #0284c7 !default;
+$infoButtonActiveBg: #0369a1 !default;
+$infoButtonTextActiveColor: $infoButtonTextColor !default;
+$infoButtonActiveBorderColor: #0369a1 !default;
+$infoButtonFocusShadow: 0 0 0 0.2rem #bfdbfe !default;
+
+$successButtonBg: #22c55e !default;
+$successButtonBorder: 1px solid #22c55e !default;
+$successButtonHoverBg: #16a34a !default;
+$successButtonTextHoverColor: $successButtonTextColor !default;
+$successButtonHoverBorderColor: #16a34a !default;
+$successButtonActiveBg: #15803d !default;
+$successButtonTextActiveColor: $successButtonTextColor !default;
+$successButtonActiveBorderColor: #15803d !default;
+$successButtonFocusShadow: 0 0 0 0.2rem #bbf7d0 !default;
+
+$warningButtonBg: #f97316 !default;
+$warningButtonTextColor: #ffffff !default;
+$warningButtonBorder: 1px solid #f97316 !default;
+$warningButtonHoverBg: #ea580c !default;
+$warningButtonTextHoverColor: $warningButtonTextColor !default;
+$warningButtonHoverBorderColor: #ea580c !default;
+$warningButtonActiveBg: #c2410c !default;
+$warningButtonTextActiveColor: $warningButtonTextColor !default;
+$warningButtonActiveBorderColor: #c2410c !default;
+$warningButtonFocusShadow: 0 0 0 0.2rem #fde68a !default;
+
+$helpButtonBg: #a855f7 !default;
+$helpButtonBorder: 1px solid #a855f7 !default;
+$helpButtonHoverBg: #9333ea !default;
+$helpButtonTextHoverColor: $helpButtonTextColor !default;
+$helpButtonHoverBorderColor: #9333ea !default;
+$helpButtonActiveBg: #7e22ce !default;
+$helpButtonTextActiveColor: $helpButtonTextColor !default;
+$helpButtonActiveBorderColor: #7e22ce !default;
+$helpButtonFocusShadow: 0 0 0 0.2rem #e9d5ff !default;
+
+$dangerButtonBg: #ef4444 !default;
+$dangerButtonBorder: 1px solid $dangerButtonBg !default;
+$dangerButtonHoverBg: #dc2626 !default;
+$dangerButtonTextHoverColor: $dangerButtonTextColor !default;
+$dangerButtonHoverBorderColor: #dc2626 !default;
+$dangerButtonActiveBg: #b91c1c !default;
+$dangerButtonTextActiveColor: $dangerButtonTextColor !default;
+$dangerButtonActiveBorderColor: #b91c1c !default;
+$dangerButtonFocusShadow: 0 0 0 0.2rem #fecaca !default;
+
+// Card
+$cardTitleFontSize: 1rem;
+$cardContentPadding: 0;
+$cardShadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0px 2px 4px 0px rgba(0, 0, 0, 0.25), 0px 2px 8px 0px rgba(0, 0, 0, 0.22);
+
+// Divider
+$dividerSize: 4px;
+$dividerColor: $primaryDarkColor;
+$dividerHorizontalMargin: 0;
+$dividerHorizontalPadding: 0;
+$dividerVerticalMargin: 0;
+$dividerVerticalPadding: 0;
+
+// Accordion
+$accordionHeaderBg: none;
+$accordionHeaderBorder: none;
+$accordionHeaderHoverBg: none;
+$accordionHeaderHoverBorderColor: $primaryDarkColor;
+$accordionHeaderActiveBg: none;
+$accordionHeaderActiveBorderColor: $primaryColor;
+$accordionHeaderActiveHoverBg: none;
+$accordionHeaderActiveHoverBorderColor: $primaryColor;
+$accordionContentBorder: none;
+$accordionContentBg: none;
+
+// TabMenu
+$tabviewNavBorderWidth: 0;
+$tabviewNavBg: none;
+$tabviewHeaderBg: none;
+$tabviewHeaderHoverBg: none;
+$tabviewHeaderTextColor: #19d6c2;
+$tabviewHeaderTextHoverColor: #19d6c2;
+$tabviewHeaderTextActiveColor: darken(#2fbba0, 20%);
+$tabviewHeaderSpacing: 0.2rem;
+
+// FileUpload
+$fileUploadContentPadding: 0;
+$fileUploadProgressBarHeight: 0;
