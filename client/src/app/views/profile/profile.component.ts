@@ -43,7 +43,6 @@ export class ProfileView implements OnInit {
     });
     this.profileService.getTutorProfile().subscribe({
       next: (response) => {
-        console.log(response);
         this.tutorProfile = response;
       },
       error: (error) => {

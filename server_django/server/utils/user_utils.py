@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
 from django.conf import settings
+import random
+import string
 
 def set_token_cookie(token, key=None):
     token_key = settings.SIMPLE_JWT['AUTH_COOKIE'] if key==None else settings.SIMPLE_JWT['REFRESH_TOKEN']
@@ -70,3 +72,19 @@ def refresh_jwt_token(request):
     except Exception as e:
         print(e)
         return Response({'detail': 'Token de refresco no válido'}, status=status.HTTP_400_BAD_REQUEST)
+
+def create_random_username():
+    adjectives = [
+        'Quick', 'Lazy', 'Sleepy', 'Noisy', 'Hungry', 'Brave', 'Calm', 'Eager', 'Fancy', 'Gentle'
+    ]
+    nouns = [
+        'Panda', 'Tiger', 'Elephant', 'Lion', 'Giraffe', 'Zebra', 'Monkey', 'Kangaroo', 'Penguin', 'Dolphin'
+    ]
+    numbers = ''.join(random.choices(string.digits, k=4))
+
+    while True:
+        username = f"{random.choice(adjectives)}{random.choice(nouns)}{numbers}"
+        if not User.objects.filter(username=username).exists():
+            break
+
+    return username

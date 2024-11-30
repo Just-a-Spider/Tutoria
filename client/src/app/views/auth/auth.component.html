@@ -22,7 +22,7 @@
           type="text"
           pInputText
           formControlName="email_username"
-          placeholder="Correo o Código de Estudiante"
+          placeholder="Correo Académico o Nombre de Usuario"
           class="p-inputtext w-full"
         />
         <p-password
@@ -49,6 +49,13 @@
         [formGroup]="registerFormGroup"
         class="flex flex-column gap-2 w-full"
       >
+        <input
+          type="text"
+          pInputText
+          formControlName="username"
+          placeholder="Nombre de Usuario"
+          class="p-inputtext w-full"
+        />
         <!-- Row 2: Correo (Full width) -->
         <input
           type="text"

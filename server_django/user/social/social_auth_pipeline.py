@@ -7,6 +7,40 @@ from django.db import transaction
 from django.utils import timezone
 from user.api.serializers import CustomTokenObtainPairSerializer
 
+
+from social_core.pipeline.partial import partial
+from user.models import User
+from django.contrib.auth.hashers import make_password
+
+@partial
+def create_user(backend, user=None, response=None, *args, **kwargs):
+    if user:
+        return {'user': user}
+
+    email = response.get('email')
+    first_name = response.get('given_name')
+    last_name = response.get('family_name')
+
+    from server.utils.user_utils import create_random_username
+    #Generate a random username
+    username = create_random_username()
+
+    # Create an encrypted password
+    password = make_password(None)
+
+    # Check if a Student with the given username already exists
+    user, created = User.objects.get_or_create(
+        username=username,
+        defaults={
+            'email': email,
+            'first_name': first_name,
+            'last_name': last_name,
+            'password': password
+        }
+    )
+
+    return {'user': user}
+
 def login_success_response(user):
     refresh = CustomTokenObtainPairSerializer.get_token(user)
     access_token = refresh.access_token

@@ -6,6 +6,8 @@ import {
 } from '../../../../classes/notifications.class';
 import { ThemeService } from '../../../../services/misc/theme.service';
 import { NotificationsService } from '../../../../services/notifications.service';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'header-notis',
@@ -22,26 +24,37 @@ export class NotificationsComponent implements OnInit {
 
   constructor(
     public themeService: ThemeService,
+    private router: Router,
     private notiService: NotificationsService,
     private messageService: MessageService
   ) {}
 
   ngOnInit() {
-    this.themeService.profileMode$.subscribe((mode) => {
-      this.mode = mode;
-      this.loadNotificationsFromSession();
-      this.updatNewNotificationsItems();
-      this.updateOldNotificationsItems();
-    });
-    this.notiService.wsNotification$.subscribe((noti) => {
-      this.showToast(noti);
-      this.getNotifications();
-      this.updatNewNotificationsItems();
-      this.updateOldNotificationsItems();
-    });
-    this.getNotifications();
-    this.updatNewNotificationsItems();
-    this.updateOldNotificationsItems();
+    // Check if the user is on the auth page
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event.urlAfterRedirects;
+        if (url.includes('/auth') || url.includes('/reset-password')) {
+          this.notiService.close();
+        } else {
+          this.themeService.profileMode$.subscribe((mode) => {
+            this.mode = mode;
+            this.loadNotificationsFromSession();
+            this.updatNewNotificationsItems();
+            this.updateOldNotificationsItems();
+          });
+          this.notiService.wsNotification$.subscribe((noti) => {
+            this.showToast(noti);
+            this.getNotifications();
+            this.updatNewNotificationsItems();
+            this.updateOldNotificationsItems();
+          });
+          this.getNotifications();
+          this.updatNewNotificationsItems();
+          this.updateOldNotificationsItems();
+        }
+      });
   }
   ngOnDestroy() {
     this.notiService.close();

@@ -1,6 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework import status
@@ -15,34 +14,39 @@ class RegisterView(APIView):
     serializer_class = RegisterSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        password = serializer.validated_data.get('password')
-        first_name = serializer.validated_data.get('first_name')
-        last_name = serializer.validated_data.get('last_name')
-        email = serializer.validated_data.get('email')
-        username = serializer.validated_data.get('username')
-        
-        if email.split('@')[1] != settings.UNIVERSITY_DOMAIN:
-            return Response(
-                {'detail': 'Correo no pertenece a la universidad'}, 
-                status=status.HTTP_400_BAD_REQUEST
+        try:
+            print(request.data)
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            password = serializer.validated_data.get('password')
+            first_name = serializer.validated_data.get('first_name')
+            last_name = serializer.validated_data.get('last_name')
+            email = serializer.validated_data.get('email')
+            username = serializer.validated_data.get('username')
+
+            if email.split('@')[1] != settings.UNIVERSITY_DOMAIN:
+                return Response(
+                    {'detail': 'Correo no pertenece a la universidad'}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
             )
-        
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password,
-        )
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
 
-        # Create both a profile and a tutor profile for the user
-        StudentProfile.objects.create(user=user)
-        TutorProfile.objects.create(user=user)
+            # Create both a profile and a tutor profile for the user
+            StudentProfile.objects.create(user=user)
+            TutorProfile.objects.create(user=user)
 
-        return Response({'detail': 'Registro Exitoso'}, status=status.HTTP_201_CREATED)
+            return Response({'detail': 'Registro Exitoso'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({'detail': 'Datos de entrada no válidos'}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(APIView):
     permission_classes = []

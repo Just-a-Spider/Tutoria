@@ -15,10 +15,7 @@ export class AuthView {
   registerFormGroup!: FormGroup;
   messages: Message[] = [];
 
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.loginFormGroup = new FormGroup({
@@ -27,16 +24,24 @@ export class AuthView {
     });
 
     this.registerFormGroup = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
+      username: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z0-9]+$'),
+      ]),
+      email: new FormControl('', [
+      Validators.required,
+      Validators.email,
+      Validators.pattern('^[a-zA-Z0-9._%+-]+@udh.edu.pe$'),
+      ]),
       first_name: new FormControl('', [Validators.required]),
       last_name: new FormControl('', [Validators.required]),
       password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(6),
+      Validators.required,
+      Validators.minLength(6),
       ]),
       confirm_password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(6),
+      Validators.required,
+      Validators.minLength(6),
       ]),
     });
   }
