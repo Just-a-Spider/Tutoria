@@ -45,10 +45,12 @@ export class NotificationsComponent implements OnInit {
             this.updateOldNotificationsItems();
           });
           this.notiService.wsNotification$.subscribe((noti) => {
-            this.showToast(noti);
-            this.getNotifications();
-            this.updatNewNotificationsItems();
-            this.updateOldNotificationsItems();
+            if (noti.type !== '') {
+              this.showToast(noti);
+              this.getNotifications();
+              this.updatNewNotificationsItems();
+              this.updateOldNotificationsItems();
+            }
           });
           this.getNotifications();
           this.updatNewNotificationsItems();
