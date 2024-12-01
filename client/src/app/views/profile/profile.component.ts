@@ -5,6 +5,9 @@ import { MessageService } from 'primeng/api';
 import { User } from '../../classes/user.class';
 import { StudentProfile, TutorProfile } from '../../classes/profile.class';
 import { ProfileService } from '../../services/profile.service';
+import { environment } from '../../../environments/environment';
+import { FileUpload } from 'primeng/fileupload';
+import { ThemeService } from '../../services/misc/theme.service';
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +21,10 @@ export class ProfileView implements OnInit {
   user: User = new User();
   studentProfile: StudentProfile = new StudentProfile();
   tutorProfile: TutorProfile = new TutorProfile();
-  ready: boolean = false;
+  mobile = false;
+  mainClass =
+    'flex flex-row gap-8 w-screen justify-content-center align-items-start p-4 mt-8';
+  mainCardClass = 'profile-card';
 
   constructor(
     private authService: AuthService,
@@ -28,6 +34,11 @@ export class ProfileView implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.mobile = window.innerWidth <= 768;
+    if (this.mobile) {
+      this.mainClass = 'flex flex-column gap-4 w-full justify-content-center p-4';
+      this.mainCardClass = 'profile-card-mobile';
+    }
     this.user = this.authService.getUserValue();
     this.profileService.getStudentProfile().subscribe({
       next: (response) => {
@@ -53,7 +64,6 @@ export class ProfileView implements OnInit {
         });
       },
     });
-    this.ready = true;
   }
 
   goBack() {
@@ -67,5 +77,31 @@ export class ProfileView implements OnInit {
       summary: 'No implementado',
       detail: 'Esta función no ha sido implementada aún.',
     });
+  }
+
+  uploadPfp(event: any, fileUpload: FileUpload, mode: string) {
+    const file = event.files[0];
+    this.profileService.uploadProfilePicture(file, mode).subscribe({
+      next: (response) => {
+        if (mode === 'student') {
+          this.studentProfile.profile_picture = `${environment.hostUrl}${response.message}`;
+        } else {
+          this.tutorProfile.profile_picture = `${environment.hostUrl}${response.message}`;
+        }
+        this.messagesService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'La imagen de perfil ha sido actualizada.',
+        });
+      },
+      error: (error) => {
+        this.messagesService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar la imagen de perfil.',
+        });
+      },
+    });
+    fileUpload.clear();
   }
 }

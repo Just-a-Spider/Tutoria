@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import {
   FullNotification,
@@ -16,11 +16,13 @@ import { filter } from 'rxjs';
   providers: [MessageService],
 })
 export class NotificationsComponent implements OnInit {
+  @Input() mobile = false;
   notifications: FullNotification[] = [];
   oldNotifications: FullNotification[] = [];
   mode = 'student';
   items: MenuItem[] = [];
   oldItems: MenuItem[] = [];
+  mainClass = 'flex flex-row gap-1';
 
   constructor(
     public themeService: ThemeService,
@@ -30,6 +32,9 @@ export class NotificationsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.mainClass = this.mobile
+      ? 'flex flex-column gap-1'
+      : 'flex flex-row gap-1';
     // Check if the user is on the auth page
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -148,9 +153,27 @@ export class NotificationsComponent implements OnInit {
     });
   }
 
+  markAllAsSeen() {
+    // Clear the student or tutor notifications based on the mode
+    if (this.mode === 'student') {
+      sessionStorage.removeItem('studentNotis');
+    } else {
+      sessionStorage.removeItem('tutorNotis');
+    }
+    this.notifications = [];
+    this.updatNewNotificationsItems();
+    this.updateOldNotificationsItems();
+  }
+
   // MENU ITEMS
   updatNewNotificationsItems() {
     this.items = [
+      // Set all notifications as seen
+      {
+        label: 'Marcar todas como leídas',
+        icon: 'pi pi-check',
+        command: () => this.markAllAsSeen(),
+      },
       ...this.notifications.map((noti) => ({
         label: noti.title,
         icon: 'pi pi-bell',

@@ -71,6 +71,10 @@ def send_notification_new_comment(sender, instance, created, **kwargs):
     if created:
         content = f'Nuevo comentario de {instance.user.username} en tu post {instance.post.title}'
         title = 'Nuevo comentario'
+        # If the commenter is the creator of the post, don't send a notification
+        if instance.user == instance.post.student.user or instance.user == instance.post.tutor.user:
+            return
+        
         noti_model = noti_models.StudentNotification if isinstance(
             instance.post, p_models.RequestHelpPost
         ) else noti_models.TutorNotification

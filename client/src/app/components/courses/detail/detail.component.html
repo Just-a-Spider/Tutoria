@@ -8,9 +8,7 @@
       <p-button
         [label]="mode === 'student' ? 'Inscribirse' : 'Ser Tutor'"
         [severity]="themeService.buttonStyle.severity"
-        [disabled]="
-          mode === 'student' ? courseData.is_student : isTutor
-        "
+        [disabled]="mode === 'student' ? courseData.is_student : isTutor"
         rounded="true"
         raised="true"
         styleClass="w-8rem mb-3"
@@ -19,9 +17,7 @@
       <p-button
         [label]="mode === 'student' ? 'Retirarse' : 'Dejar de ser Tutor'"
         [severity]="themeService.buttonStyle.severity"
-        [disabled]="
-          mode === 'student' ? !courseData.is_student : !isTutor
-        "
+        [disabled]="mode === 'student' ? !courseData.is_student : !isTutor"
         rounded="true"
         raised="true"
         styleClass="w-10rem mb-3"
@@ -46,12 +42,19 @@
       />
     </div>
   </div>
-  <div class="flex justify-content-center w-full gap-8">
+  <div *ngIf="!mobile" class="flex justify-content-center w-full gap-8">
     <div class="col-8">
       <course-posts [courseId]="courseData.id!.toString()" />
     </div>
     <div class="col-2">
       <course-ranking />
     </div>
+  </div>
+  <div
+    *ngIf="mobile"
+    class="flex flex-column w-full gap-2 justify-content-center align-items-center"
+  >
+    <course-posts [courseId]="courseData.id!.toString()" />
+    <course-ranking />
   </div>
 </div>

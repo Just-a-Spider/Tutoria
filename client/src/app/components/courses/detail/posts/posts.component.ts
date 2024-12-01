@@ -51,10 +51,29 @@ export class PostsComponent implements OnChanges {
     { field: 'created_at', header: 'Fecha de Creación' },
   ];
 
+  tableRows: number = 10;
+
+  mobile = false;
+  mainClass = 'flex flex-row w-full justify-content-between';
+  tablesClass = 'col-10 border-2 border-dotted border-round';
+  dialogStyle = { width: '60vh', margin: '0 auto' };
+
   constructor(
     private postsService: PostsService,
     public themeService: ThemeService
   ) {
+    this.themeService.mobileMode$.subscribe((mode) => {
+      this.mobile = mode;
+      this.mainClass = mode
+        ? 'flex flex-column w-screen p-2 justify-content-start'
+        : 'flex flex-row w-full justify-content-between';
+      this.tablesClass = mode
+        ? 'w-full border-2 border-dotted border-round'
+        : 'col-10 border-2 border-dotted border-round';
+      this.dialogStyle = mode
+        ? { width: '90vw', margin: '0 auto' }
+        : { width: '60vh', margin: '0 auto' };
+    });
     this.columns = this.columns.filter((column) => column.field !== 'tutor');
     this.themeService.profileMode$.subscribe((mode) => {
       this.mode = mode;

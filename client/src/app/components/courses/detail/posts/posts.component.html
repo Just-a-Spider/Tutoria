@@ -1,15 +1,17 @@
-<div class="flex flex-row w-full justify-content-between">
-  <div class="flex col-1 align-items-start justify-content-center">
+<div [class]="mainClass">
+  <div
+    [class]="mobile ? 'm-2' : 'flex col-1 align-items-start justify-content-center'"
+  >
     <p-button
       label="Crear Post"
       raised="true"
       rounded="true"
       [severity]="themeService.buttonStyle.severity"
       (click)="dialogHeader = 'Crear Publicación'; showDialog = true"
-      styleClass="text-center text-sm"
+      [styleClass]="mobile ? 'w-full' : 'text-center text-sm'"
     />
   </div>
-  <div class="col-10 border-2 border-dotted border-round">
+  <div [class]="tablesClass">
     <p-tabView (activeIndexChange)="onTabChange($event)">
       <!-- Request Help Posts -->
       <p-tabPanel header="Pedir Ayuda">
@@ -35,7 +37,7 @@
             [columns]="columns"
             [value]="requestHelpPage.results"
             [paginator]="true"
-            [rows]="10"
+            [rows]="tableRows"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -91,7 +93,7 @@
             [columns]="columns"
             [value]="offerHelpPage.results"
             [paginator]="true"
-            [rows]="10"
+            [rows]="tableRows"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -147,7 +149,7 @@
             [columns]="myColumns"
             [value]="myPostsPage.results"
             [paginator]="true"
-            [rows]="10"
+            [rows]="tableRows"
           >
             <ng-template pTemplate="header">
               <tr>
@@ -201,12 +203,12 @@
   [header]="dialogHeader"
   [(visible)]="showDialog"
   [modal]="true"
-  [style]="{ width: '50vw' }"
+  [style]="dialogStyle"
 >
   <ng-container *ngIf="dialogHeader === 'Crear Publicación'; else postDetail">
     <create-post [mode]="mode" (postCreated)="createPost($event)"></create-post>
   </ng-container>
   <ng-template #postDetail>
-    <post-detail [post]="selectedPost"></post-detail>
+    <post-detail [post]="selectedPost" [mobile]="mobile"></post-detail>
   </ng-template>
 </p-dialog>

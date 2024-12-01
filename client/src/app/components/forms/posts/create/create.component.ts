@@ -16,7 +16,6 @@ export class CreatePostForm {
   constructor() {}
 
   onCreatePost() {
-    console.log(this.postData);
     this.postCreated.emit(this.postData);
   }
 }

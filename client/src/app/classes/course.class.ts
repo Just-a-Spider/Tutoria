@@ -10,5 +10,5 @@ export class Course extends SimpleCourse {
   try_out_tutors?: number;
   is_student?: boolean;
   is_tutor?: boolean;
-  is_tryout_tutor?: boolean;
+  is_try_out_tutor?: boolean;
 }

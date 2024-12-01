@@ -153,13 +153,13 @@ else:
 
     DATABASES = {
         'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
+            default=os.environ.get('HEROKU_POSTGRESQL_BLACK_URL'),
             conn_max_age=600
         )
     }
 
 # Channels
-REDIS_URL = os.getenv('REDIS_URL')
+REDIS_URL = os.getenv('REDISCLOUD_URL')
 
 if REDIS_URL == '' or REDIS_URL is None:
     CHANNEL_LAYERS = {

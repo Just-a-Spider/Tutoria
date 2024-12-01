@@ -1,5 +1,7 @@
-<div class="flex flex-row h-full w-screen">
-  <p-scrollPanel [style]="{ width: '100%', height: '100%', padding: '1rem 1rem 0 1rem'}">
+<div *ngIf="!mobile" class="flex flex-row h-full w-screen">
+  <p-scrollPanel
+    [style]="{ width: '100%', height: '100%', padding: '1rem 1rem 0 1rem' }"
+  >
     <ui-side-bar />
   </p-scrollPanel>
   <p-divider layout="vertical" styleClass="m-0 p-0 h-screen" />
@@ -7,3 +9,7 @@
     <router-outlet />
   </div>
 </div>
+
+<p-scrollPanel *ngIf="mobile" [style]="{ height: '100%' }">
+  <router-outlet />
+</p-scrollPanel>

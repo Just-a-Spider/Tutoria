@@ -1,6 +1,7 @@
+<p-toast position="bottom-left" />
 <div
-  *ngIf="ready"
-  class="flex flex-row gap-8 w-screen justify-content-center align-items-start p-4 mt-8"
+  *ngIf="tutorProfile.profile_picture !== ''"
+  [class]="mainClass"
 >
   <!-- Go Back Button -->
   <p-button
@@ -10,7 +11,7 @@
     (click)="goBack()"
   ></p-button>
   <!-- General User Setting -->
-  <p-card header="Cuenta" class="profile-card">
+  <p-card header="Cuenta" [class]="mainCardClass">
     <div
       class="flex flex-column gap-4 justify-content-center align-items-center"
       style="max-width: 100%"
@@ -62,7 +63,7 @@
   </p-card>
 
   <!-- Student Profile Settings -->
-  <p-card header="Perfil Estudiante" class="profile-card">
+  <p-card header="Perfil Estudiante" [class]="mainCardClass">
     <div
       class="flex flex-column gap-2 justify-content-center align-items-center"
       style="max-width: 100%"
@@ -76,16 +77,20 @@
                 ? 'https://via.placeholder.com/150'
                 : studentProfile.profile_picture
             "
-            alt="Profile Picture"
+            alt="Student Profile Picture"
             imageClass="border-circle border-2"
             width="150px"
             height="150px"
-          ></p-image>
+          />
         </div>
         <p-fileUpload
+          #studentFU
           mode="basic"
           accept="image/*"
           maxFileSize="1000000"
+          customUpload="true"
+          (uploadHandler)="uploadPfp($event, studentFU, 'student')"
+          auto="true"
           chooseLabel="Seleccionar"
           uploadLabel="Subir"
           cancelLabel="Cancelar"
@@ -103,7 +108,7 @@
   </p-card>
 
   <!-- Tutor Profile Settings -->
-  <p-card header="Perfil Tutor" class="profile-card">
+  <p-card header="Perfil Tutor" [class]="mainCardClass">
     <div
       class="flex flex-column gap-2 justify-content-center align-items-center"
       style="max-width: 100%"
@@ -117,16 +122,20 @@
                 ? 'https://via.placeholder.com/150'
                 : tutorProfile.profile_picture
             "
-            alt="Profile Picture"
+            alt="Tutor Profile Picture"
             imageClass="border-circle border-2"
             width="150px"
             height="150px"
           ></p-image>
         </div>
         <p-fileUpload
+          #tutorFU
           mode="basic"
           accept="image/*"
           maxFileSize="1000000"
+          customUpload="true"
+          (uploadHandler)="uploadPfp($event, tutorFU, 'tutor')"
+          auto="true"
           chooseLabel="Seleccionar"
           uploadLabel="Subir"
           cancelLabel="Cancelar"

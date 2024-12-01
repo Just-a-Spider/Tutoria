@@ -1,0 +1,7 @@
+<p-button
+  [icon]="themeService.buttonStyle.icon"
+  [label]="mode === 'student' ? 'Estudiante' : 'Tutor'"
+  [styleClass]="mobile ? 'p-button-rounded w-full' : 'p-button-rounded'"
+  [severity]="themeService.buttonStyle.severity"
+  (click)="changeProfile()"
+/>

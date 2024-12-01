@@ -7,7 +7,7 @@
             ? hostUrl + post!.pfp_url
             : 'https://via.placeholder.com/150'
         "
-        size="xlarge"
+        [size]="mobile ? 'large' : 'xlarge'"
         shape="circle"
         styleClass="border-2 border-circle"
       />
@@ -58,12 +58,15 @@
                 ? hostUrl + comment.pfp_url
                 : 'https://via.placeholder.com/150'
             "
-            size="large"
+            [size]="mobile ? 'normal' : 'large'"
             shape="circle"
             styleClass="border-2 border-circle"
           />
           <span class="font-bold">{{ comment.user }}</span>
-          <p>{{ comment.created_at | date : "MMM d, y, h:mm:ss a" }}</p>
+          <p *ngIf="!mobile">
+            {{ comment.created_at | date : "MMM d, y, h:mm:ss a" }}
+          </p>
+          <p *ngIf="mobile">{{ comment.created_at | date : "MMM d, y" }}</p>
         </div>
         <p>{{ comment.content }}</p>
       </div>

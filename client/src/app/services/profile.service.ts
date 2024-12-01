@@ -25,4 +25,13 @@ export class ProfileService {
       withCredentials: true,
     });
   }
+
+  // FOR BOTH
+  uploadProfilePicture(file: File, mode: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('profile_picture', file);
+    return this.http.post(`${this.apiUrl}${mode}/upload-profile-picture/`, formData, {
+      withCredentials: true,
+    });
+  }
 }

@@ -14,6 +14,8 @@ export class HeaderComponent implements OnInit {
   isDarkMode = true;
   displayNotis = false;
   isOnAuth = false;
+  menuClass = 'flex flex-row gap-2 m-3';
+  mobile = false;
 
   constructor(
     private router: Router,
@@ -22,6 +24,12 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.themeService.mobileMode$.subscribe((mode) => {
+      this.mobile = mode;
+      this.menuClass = mode
+        ? 'flex flex-column gap-2 m-3'
+        : 'flex flex-row gap-2 m-3';
+    });
     // Check if the user is on the auth page
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))

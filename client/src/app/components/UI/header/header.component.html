@@ -1,9 +1,13 @@
 <div
-  class="w-full text-center flex flex-row justify-content-between align-items-center"
+  [class]="
+    mobile
+      ? 'flex flex-row justify-content-start align-items-start'
+      : 'w-full text-center flex flex-row justify-content-between align-items-center'
+  "
 >
-  <img src="udhlog.png" height="70rem" class="m-2" />
-  <div class="flex flex-row gap-2 m-3">
-    <div class="flex flex-row gap-0 align-items-center">
+  <img *ngIf="!mobile" src="udhlog.png" height="70rem" class="m-2" />
+  <div [class]="menuClass">
+    <div class="flex flex-row gap-2 align-items-center">
       <p-chip
         styleClass="bg-transparent"
         [icon]="isDarkMode ? 'pi pi-moon' : 'pi pi-sun'"
@@ -15,32 +19,26 @@
       />
     </div>
     @if (!isOnAuth) {
-    <header-notis />
+    <header-notis [mobile]="mobile" />
     <p-button
       icon="pi pi-comments"
       label="Mensajes"
       [severity]="themeService.buttonStyle.severity"
-      styleClass="p-button-rounded"
+      [styleClass]="mobile ? 'p-button-rounded w-full' : 'p-button-rounded'"
     />
-    <p-button
-      [icon]="themeService.buttonStyle.icon"
-      [label]="mode === 'student' ? 'Estudiante' : 'Tutor'"
-      styleClass="p-button-rounded w-8rem"
-      [severity]="themeService.buttonStyle.severity"
-      (click)="changeProfile()"
-    />
+    <header-profile *ngIf="!mobile" />
     <p-button
       icon="pi pi-user"
       label="Perfil"
       [severity]="themeService.buttonStyle.severity"
-      styleClass="p-button-rounded"
+      [styleClass]="mobile ? 'p-button-rounded w-full' : 'p-button-rounded'"
       (click)="goToProfile()"
     />
     <p-button
       icon="pi pi-sign-out"
       label="Cerrar Sesión"
       [severity]="themeService.buttonStyle.severity"
-      styleClass="p-button-rounded"
+      [styleClass]="mobile ? 'p-button-rounded w-full' : 'p-button-rounded'"
       (click)="logout()"
     />}
   </div>

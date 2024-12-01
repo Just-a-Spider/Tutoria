@@ -20,6 +20,7 @@ import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SidebarModule } from 'primeng/sidebar';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { ToastModule } from 'primeng/toast';
@@ -43,6 +44,7 @@ import { ToastModule } from 'primeng/toast';
     MessagesModule,
     PanelModule,
     PasswordModule,
+    SidebarModule,
     TableModule,
     TabViewModule,
     ToastModule,

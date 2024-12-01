@@ -34,6 +34,7 @@ import { AuthView } from './views/auth/auth.component';
 import { HomeView } from './views/home/home.component';
 import { LandingView } from './views/landing/landing.component';
 import { ProfileView } from './views/profile/profile.component';
+import { ProfileChangeButton } from './components/UI/header/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ProfileView } from './views/profile/profile.component';
 
     // Forms
     CreatePostForm,
+    ProfileChangeButton,
   ],
   imports: [
     BrowserModule,

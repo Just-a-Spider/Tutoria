@@ -12,13 +12,18 @@ export class ThemeService {
 
   private profileMode: BehaviorSubject<string> = new BehaviorSubject('student');
   profileMode$ = this.profileMode.asObservable();
-
   setProfileMode(mode: string) {
     localStorage.setItem('profileMode', mode);
     this.profileMode.next(mode);
     this.buttonStyle = BUTTONS.find(
       (button) => button.mode === mode
     ) as ButtonInterface;
+  }
+
+  private mobileMode: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  mobileMode$ = this.mobileMode.asObservable();
+  setMobileMode(mode: boolean) {
+    this.mobileMode.next(mode);
   }
 
   constructor() {

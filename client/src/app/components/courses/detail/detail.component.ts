@@ -14,6 +14,7 @@ export class CourseDetailComponent implements OnInit {
   mode = 'student';
   gotCourse = false;
   isTutor: boolean = false;
+  mobile = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -22,6 +23,9 @@ export class CourseDetailComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.themeService.mobileMode$.subscribe((mode) => {
+      this.mobile = mode;
+    });
     this.themeService.profileMode$.subscribe((mode) => {
       this.mode = mode;
     });
@@ -37,8 +41,10 @@ export class CourseDetailComponent implements OnInit {
             this.courseData = course;
             this.gotCourse = true;
             // Check if the user is a tutor
-            if (this.courseData.is_tutor || this.courseData.is_tryout_tutor) {
+            if (this.courseData.is_tutor || this.courseData.is_try_out_tutor) {
               this.isTutor = true;
+            } else {
+              this.isTutor = false;
             }
           },
           error: (err) => {
@@ -63,7 +69,7 @@ export class CourseDetailComponent implements OnInit {
             // Add the course to the tutor's courses
             // Check if is a tutor or tryout tutor
             this.courseData.try_out_tutors! += 1;
-            this.courseData.is_tryout_tutor = true;
+            this.courseData.is_try_out_tutor = true;
           }
         },
         error: (err) => {
@@ -85,7 +91,7 @@ export class CourseDetailComponent implements OnInit {
             this.isTutor = false;
             // Remove the course from the tutor's courses
             // Check if is a tutor or tryout tutor
-            if (this.courseData.is_tryout_tutor) {
+            if (this.courseData.is_try_out_tutor) {
               this.courseData.try_out_tutors! -= 1;
             } else {
               this.courseData.tutors! -= 1;

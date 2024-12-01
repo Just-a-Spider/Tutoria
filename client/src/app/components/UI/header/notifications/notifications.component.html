@@ -1,11 +1,11 @@
-<div class="flex flex-row gap-1">
+<div [class]="mainClass">
   <p-toast position="bottom-left" />
   <p-menu #new [model]="items" [popup]="true" />
   <p-button
     icon="pi pi-bell"
     label="Notificaciones"
     [severity]="themeService.buttonStyle.severity"
-    styleClass="p-button-rounded"
+    [styleClass]="mobile ? 'p-button-rounded w-full' : 'p-button-rounded'"
     (click)="new.toggle($event)"
   />
   <!-- Notification History -->
@@ -14,7 +14,7 @@
     icon="pi pi-bell"
     label="Historial de notificaciones"
     [severity]="themeService.buttonStyle.severity"
-    styleClass="p-button-rounded"
+    [styleClass]="mobile ? 'p-button-rounded w-full' : 'p-button-rounded'"
     (click)="old.toggle($event)"
   />
 </div>

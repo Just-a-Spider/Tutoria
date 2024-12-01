@@ -14,6 +14,7 @@ import { environment } from '../../../../../../environments/environment';
 })
 export class PostDetailComponent implements OnInit {
   @Input() post: RequestHelpPost | OfferHelpPost | null = null;
+  @Input() mobile = false;
   postId = '';
   postType = '';
 
