@@ -3,11 +3,37 @@
   <div
     class="flex flex-column align-items-center justify-content-center w-full md:w-5 lg:w-4 card p-3"
   >
-    <h2 class="text-center">Nombre de la Aplicación</h2>
+    <p-card class="w-full mb-3 p-3">
+      <ng-template pTemplate="header">
+        <p-message
+          severity="warn"
+          text="Activar cookies es necesario, sobre todo si deseas iniciar sesión con Google."
+          styleClass="w-full text-center"
+        ></p-message>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <p-panel
+          header="Instrucciones para habilitar cookies"
+          [toggleable]="true"
+          [collapsed]="true"
+        >
+          <p>Para habilitar cookies en tu navegador, sigue estos pasos:</p>
+          <p-listbox
+            [options]="cookieInstructions"
+            [style]="{ width: '100%' }"
+          ></p-listbox>
+          <p>
+            Para instrucciones detalladas, consulta la documentación de ayuda de
+            tu navegador.
+          </p>
+        </p-panel>
+      </ng-template>
+    </p-card>
+    <h2 class="text-center">Nombre de la Aplicación (Testing)</h2>
     <div class="card w-full p-4">
       <p-button
         label="Iniciar sesión con Google"
-        styleClass="w-full mt-3"
+        styleClass="w-full mb-3"
         (click)="googleLogin()"
       />
       <h2 class="mb-3">{{ toggleForm ? "Regístrate" : "Bienvenido" }}</h2>
@@ -25,6 +51,16 @@
           placeholder="Correo Académico o Nombre de Usuario"
           class="p-inputtext w-full"
         />
+        <p-message
+          *ngIf="
+            loginFormGroup.controls['email_username'].invalid &&
+            loginFormGroup.controls['email_username'].touched
+          "
+          severity="error"
+          text="Correo Académico o Nombre de Usuario es requerido"
+          styleClass="w-full text-center"
+        ></p-message>
+
         <p-password
           formControlName="password"
           placeholder="Contraseña"
@@ -32,6 +68,16 @@
           [inputStyle]="{ width: '100%' }"
           [style]="{ width: '100%' }"
         />
+        <p-message
+          *ngIf="
+            loginFormGroup.controls['password'].invalid &&
+            loginFormGroup.controls['password'].touched
+          "
+          severity="error"
+          text="Contraseña es requerida"
+          styleClass="w-full text-center"
+        ></p-message>
+
         <p-button
           label="Iniciar sesión"
           styleClass="p-button-primary mt-3 w-full"
@@ -56,6 +102,16 @@
           placeholder="Nombre de Usuario"
           class="p-inputtext w-full"
         />
+        <p-message
+          *ngIf="
+            registerFormGroup.controls['username'].invalid &&
+            registerFormGroup.controls['username'].touched
+          "
+          severity="error"
+          text="Nombre de Usuario es requerido y debe ser alfanumérico"
+          styleClass="w-full text-center"
+        ></p-message>
+
         <!-- Row 2: Correo (Full width) -->
         <input
           type="text"
@@ -64,6 +120,16 @@
           placeholder="Correo"
           class="p-inputtext w-full"
         />
+        <p-message
+          *ngIf="
+            registerFormGroup.controls['email'].invalid &&
+            registerFormGroup.controls['email'].touched
+          "
+          severity="error"
+          text="Correo es requerido y debe ser de la Universidad"
+          styleClass="w-full text-center"
+        ></p-message>
+
         <!-- Row 3: Nombres and Apellidos (side by side) -->
         <div class="flex gap-2">
           <input
@@ -73,6 +139,7 @@
             placeholder="Nombres"
             class="p-inputtext w-full"
           />
+
           <input
             type="text"
             pInputText
@@ -81,6 +148,17 @@
             class="p-inputtext w-full"
           />
         </div>
+        <p-message
+          *ngIf="
+            (registerFormGroup.controls['first_name'].invalid &&
+              registerFormGroup.controls['first_name'].touched) ||
+            (registerFormGroup.controls['last_name'].invalid &&
+              registerFormGroup.controls['last_name'].touched)
+          "
+          severity="error"
+          text="Nombre y Apellido son requeridos"
+          styleClass="w-full text-center"
+        ></p-message>
         <!-- Row 4: Contraseña (Full width) -->
         <p-password
           formControlName="password"
@@ -89,6 +167,16 @@
           [inputStyle]="{ width: '100%' }"
           [style]="{ width: '100%' }"
         ></p-password>
+        <p-message
+          *ngIf="
+            registerFormGroup.controls['password'].invalid &&
+            registerFormGroup.controls['password'].touched
+          "
+          severity="error"
+          text="Contraseña es requerida y debe tener al menos 6 caracteres"
+          styleClass="w-full text-center"
+        ></p-message>
+
         <p-password
           formControlName="confirm_password"
           placeholder="Confirmar contraseña"
@@ -96,6 +184,18 @@
           [inputStyle]="{ width: '100%' }"
           [style]="{ width: '100%' }"
         ></p-password>
+        <p-message
+          *ngIf="
+            (registerFormGroup.controls['confirm_password'].invalid &&
+              registerFormGroup.controls['confirm_password'].touched) ||
+            registerFormGroup.controls['confirm_password'].value !==
+              registerFormGroup.controls['password'].value
+          "
+          severity="error"
+          text="Confirmar Contraseña es requerida y debe coincidir con la contraseña"
+          styleClass="w-full text-center"
+        ></p-message>
+
         <!-- Button: Register -->
         <button
           pButton

@@ -5,14 +5,19 @@
 </div>
 
 <div *ngIf="mobile" class="flex flex-column gap-0 h-screen">
-  <div class="flex flex-row justify-content-between align-items-center p-2 header">
+  <div
+    class="flex flex-row justify-content-between align-items-center p-2 header"
+  >
     <p-button
       label="Cursos"
       iconPos="left"
       icon="pi pi-book"
       (click)="showSideBar = !showSideBar"
+      [disabled]="isOnAuth"
     />
+    @if (!isOnAuth) {
     <header-profile [mobile]="mobile" />
+    }
     <p-button
       label="Menu"
       iconPos="right"
@@ -23,11 +28,13 @@
   <p-sidebar [(visible)]="showHeader" position="right">
     <ui-header />
   </p-sidebar>
+  @if (!isOnAuth) {
   <p-sidebar [(visible)]="showSideBar" position="left">
     <ui-side-bar />
   </p-sidebar>
+  }
   <p-divider class="p-0 m-0" />
-  <p-scrollPanel [style]="{ 'height': '82vh', 'margin-top': '1rem'  }">
+  <p-scrollPanel [style]="{ height: '82vh', 'margin-top': '1rem' }">
     <router-outlet />
   </p-scrollPanel>
 </div>

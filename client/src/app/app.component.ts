@@ -1,5 +1,8 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ThemeService } from './services/misc/theme.service';
+import { Router } from '@angular/router';
+import { NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +14,19 @@ export class AppComponent implements OnInit {
   mobile = false;
   showHeader = false;
   showSideBar = false;
+  isOnAuth = false;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private themeService: ThemeService, private router: Router) {}
 
   ngOnInit() {
-    this.checkWindowWidth();
+    this.checkWindowWidth(); // Check if the user is on the auth page
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event.urlAfterRedirects;
+        this.isOnAuth =
+          url.includes('/auth') || url.includes('/reset-password');
+      });
   }
 
   @HostListener('window:resize', ['$event'])

@@ -6,6 +6,7 @@ from profiles.models import StudentProfile, TutorProfile
 from django.db import transaction
 from django.utils import timezone
 from user.api.serializers import CustomTokenObtainPairSerializer
+from rest_framework.response import Response
 
 
 from social_core.pipeline.partial import partial
@@ -48,7 +49,7 @@ def login_success_response(user):
     user.last_login = timezone.now()
     user.save()
 
-    response = redirect(settings.LOGIN_REDIRECT_URL)
+    response = Response({'detail': 'Login successful'})
     response.set_cookie(
         key=settings.SIMPLE_JWT['AUTH_COOKIE'],
         value=str(access_token),
@@ -66,7 +67,19 @@ def login_success_response(user):
         samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
     )
 
-    return response
+    # Perform the redirect after setting the cookies
+    redirect_response = redirect(settings.LOGIN_REDIRECT_URL)
+    for cookie in response.cookies:
+        redirect_response.set_cookie(
+            key=cookie,
+            value=response.cookies[cookie].value,
+            expires=response.cookies[cookie]['expires'],
+            secure=response.cookies[cookie]['secure'],
+            httponly=response.cookies[cookie]['httponly'],
+            samesite=response.cookies[cookie]['samesite'],
+        )
+
+    return redirect_response
 
 def fetch_google_classroom_courses(backend, user, response, *args, **kwargs):
     if backend.name != 'google-oauth2':
@@ -115,4 +128,3 @@ def fetch_google_classroom_courses(backend, user, response, *args, **kwargs):
 
     # Login the user with JWT from the user's view
     return login_success_response(user)
-

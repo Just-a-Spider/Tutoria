@@ -56,6 +56,7 @@ export class AuthService {
       })
       .subscribe({
         next: (response) => {
+          this.userSubject.next(new User()); // Clear the user state
           this.router.navigate(['/auth']);
         },
         error: (error) => {

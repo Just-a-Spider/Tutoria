@@ -1,12 +1,16 @@
+import logging
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import TokenError
-from user.models import *
+from user.models import User
 from user.api.serializers import CustomTokenObtainPairSerializer
 from server.utils.user_utils import set_token_cookie
 
 class CustomJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         is_mobile = request.headers.get('Auth-X-Mobile', 'False') == 'True'
+        print(request.headers)
+        print(request.COOKIES)
+        
         if is_mobile:
             access_token = request.headers.get('Authorization')
             refresh_token = request.headers.get('Refresh')
@@ -15,13 +19,14 @@ class CustomJWTAuthentication(JWTAuthentication):
             refresh_token = request.COOKIES.get('refresh_token')
 
         if not access_token:
+            print('No access token')
             return None
 
         try:
             validated_token = self.get_validated_token(access_token)
             user = self.get_user(validated_token)
             return (user, validated_token)
-        except TokenError:
+        except TokenError as e:
             # Access token is invalid or expired
             if refresh_token:
                 try:
@@ -31,7 +36,7 @@ class CustomJWTAuthentication(JWTAuthentication):
                     validated_token = self.get_validated_token(new_access_token)
                     user = self.get_user(validated_token)
                     return (user, validated_token, response)
-                except TokenError:
+                except TokenError as e:
                     return None
             return None
 

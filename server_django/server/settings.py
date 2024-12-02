@@ -28,13 +28,15 @@ if not DEBUG:
     ]
     CORS_ALLOWED_ORIGINS = [
         'https://tutoria-server-c8883323cac2.herokuapp.com',
-        'https://tutoria-frontend-2ac82f8af039.herokuapp.com'    
+        'https://tutoria-frontend-2ac82f8af039.herokuapp.com',
+        'https://accounts.google.com'    
     ]
     CORS_ALLOW_CREDENTIALS = True
 
     CSRF_TRUSTED_ORIGINS = [
         'https://tutoria-frontend-2ac82f8af039.herokuapp.com',   
-        'https://tutoria-server-c8883323cac2.herokuapp.com'
+        'https://tutoria-server-c8883323cac2.herokuapp.com',
+        'https://accounts.google.com'
     ]
 else:
     ALLOWED_HOSTS = ['*']

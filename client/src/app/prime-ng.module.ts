@@ -15,7 +15,9 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { ListboxModule } from 'primeng/listbox';
 import { MenuModule } from 'primeng/menu';
+import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
@@ -41,7 +43,9 @@ import { ToastModule } from 'primeng/toast';
     InputSwitchModule,
     ImageModule,
     KeyFilterModule,
+    ListboxModule,
     MessagesModule,
+    MessageModule,
     PanelModule,
     PasswordModule,
     SidebarModule,

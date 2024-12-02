@@ -75,8 +75,18 @@ class LoginView(APIView):
 class LogoutView(APIView):
     def get(self, request):
         response = Response({'detail': 'Logout successful'})
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        response.delete_cookie(
+            key=settings.SIMPLE_JWT['AUTH_COOKIE'],
+            domain=settings.SIMPLE_JWT.get('AUTH_COOKIE_DOMAIN', None),
+            path=settings.SIMPLE_JWT.get('AUTH_COOKIE_PATH', '/'),
+            samesite=settings.SIMPLE_JWT.get('AUTH_COOKIE_SAMESITE', 'Lax'),
+        )
+        response.delete_cookie(
+            key='refresh_token',
+            domain=settings.SIMPLE_JWT.get('AUTH_COOKIE_DOMAIN', None),
+            path=settings.SIMPLE_JWT.get('AUTH_COOKIE_PATH', '/'),
+            samesite=settings.SIMPLE_JWT.get('AUTH_COOKIE_SAMESITE', 'Lax'),
+        )
         return response
 
 class MeView(RetrieveAPIView):

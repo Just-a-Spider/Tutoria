@@ -14,6 +14,14 @@ export class AuthView {
   loginFormGroup!: FormGroup;
   registerFormGroup!: FormGroup;
   messages: Message[] = [];
+  cookieInstructions: any[] = [
+    { label: 'Abre la configuración de tu navegador.' },
+    { label: 'Navega a la sección de Privacidad y Seguridad.' },
+    {
+      label:
+        'Encuentra la sección de Cookies y permite cookies para este sitio.',
+    },
+  ];
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -25,23 +33,23 @@ export class AuthView {
 
     this.registerFormGroup = new FormGroup({
       username: new FormControl('', [
-      Validators.required,
-      Validators.pattern('^[a-zA-Z0-9]+$'),
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9]+$'),
       ]),
       email: new FormControl('', [
-      Validators.required,
-      Validators.email,
-      Validators.pattern('^[a-zA-Z0-9._%+-]+@udh.edu.pe$'),
+        Validators.required,
+        Validators.email,
+        Validators.pattern('^[a-zA-Z0-9._%+-]+@udh.edu.pe$'),
       ]),
       first_name: new FormControl('', [Validators.required]),
       last_name: new FormControl('', [Validators.required]),
       password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(6),
+        Validators.required,
+        Validators.minLength(6),
       ]),
       confirm_password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(6),
+        Validators.required,
+        Validators.minLength(6),
       ]),
     });
   }
@@ -76,7 +84,11 @@ export class AuthView {
   }
 
   register() {
-    if (this.registerFormGroup.valid) {
+    if (
+      this.registerFormGroup.valid &&
+      this.registerFormGroup.value.password ===
+        this.registerFormGroup.value.confirm_password
+    ) {
       this.authService.register(this.registerFormGroup.value).subscribe({
         next: (response) => {
           this.messages = [
