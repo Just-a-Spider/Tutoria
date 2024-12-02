@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  hostUrl: 'http://127.0.0.1:8000',
-  apiUrl: 'http://127.0.0.1:8000/api/',
-  apiKey: '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',
-  socketUrl: 'http://127.0.0.1:8000/ws/',
+  hostUrl: 'https://tutoria-server-c8883323cac2.herokuapp.com',
+  apiUrl: 'https://tutoria-server-c8883323cac2.herokuapp.com/api/',
+  apiKey: '1eb2ed4b-db5b-4cc4-9846-79099f2735c2',
+  socketUrl: 'wss://tutoria-server-c8883323cac2.herokuapp.com/ws/',
 };

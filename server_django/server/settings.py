@@ -19,22 +19,25 @@ SECRET_KEY = 'django-insecure-@91^aooc_7yz4q$kvro-hpd#$wa=8(87to50=ip*&o9j-e0wel
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
 
 # CORS
 if not DEBUG:
+    ALLOWED_HOSTS = [
+        # Heroku
+        '.herokuapp.com',
+    ]
     CORS_ALLOWED_ORIGINS = [
-        'https://tutoria-3jn8.onrender.com', 
-        'http://localhost:4200'
+        'https://tutoria-server-c8883323cac2.herokuapp.com',
+        'https://tutoria-frontend-2ac82f8af039.herokuapp.com'    
     ]
     CORS_ALLOW_CREDENTIALS = True
 
     CSRF_TRUSTED_ORIGINS = [
-    'https://tutoria-3jn8.onrender.com',
-    'http://tutoria-3jn8.onrender.com',
-    'http://localhost:4200',
+        'https://tutoria-frontend-2ac82f8af039.herokuapp.com',   
+        'https://tutoria-server-c8883323cac2.herokuapp.com'
     ]
 else:
+    ALLOWED_HOSTS = ['*']
     CORS_ALLOW_ALL_ORIGINS = True
     CORS_ALLOW_CREDENTIALS = True
 
@@ -149,11 +152,13 @@ if DEBUG:
         }
     }
 else:
+    import dj_database_url
+
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL'),
+            conn_max_age=600
+        )
     }
 
 # Channels
