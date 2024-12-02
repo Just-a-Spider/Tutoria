@@ -3,9 +3,7 @@
     <div class="flex align-items-center gap-2">
       <p-avatar
         [image]="
-          post!.pfp_url
-            ? hostUrl + post!.pfp_url
-            : 'https://via.placeholder.com/150'
+          post!.pfp_url ? post!.pfp_url : 'https://via.placeholder.com/150'
         "
         [size]="mobile ? 'large' : 'xlarge'"
         shape="circle"
@@ -55,7 +53,7 @@
           <p-avatar
             [image]="
               comment.pfp_url
-                ? hostUrl + comment.pfp_url
+                ? comment.pfp_url
                 : 'https://via.placeholder.com/150'
             "
             [size]="mobile ? 'normal' : 'large'"

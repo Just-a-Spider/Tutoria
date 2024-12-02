@@ -35,16 +35,18 @@ def send_notification_to_tutors(sender, instance, created, **kwargs):
         try_out_tutors = instance.course.tutortryouts_set.all()
         content = f'Nueva petición de ayuda de {instance.student.user.username}'
         title = 'Nueva petición de ayuda'
-        for tutor in tutors:
-            create_and_send_notification(noti_models.TutorNotification, tutor.user, title, content, instance.id)
-        for try_out_tutor in try_out_tutors:
-            create_and_send_notification(
-                noti_models.TutorNotification, 
-                try_out_tutor.tutor.user, 
-                title, 
-                content, 
-                instance.id
-            )
+        if tutors:
+            for tutor in tutors:
+                create_and_send_notification(noti_models.TutorNotification, tutor.user, title, content, instance.id)
+        if try_out_tutors:
+            for try_out_tutor in try_out_tutors:
+                create_and_send_notification(
+                    noti_models.TutorNotification, 
+                    try_out_tutor.tutor.user, 
+                    title, 
+                    content, 
+                    instance.id
+                )
 
 # OfferHelpPost
 @receiver(post_save, sender=p_models.OfferHelpPost)
@@ -72,15 +74,22 @@ def send_notification_new_comment(sender, instance, created, **kwargs):
         content = f'Nuevo comentario de {instance.user.username} en tu post {instance.post.title}'
         title = 'Nuevo comentario'
         # If the commenter is the creator of the post, don't send a notification
-        if instance.user == instance.post.student.user or instance.user == instance.post.tutor.user:
+        if isinstance(instance.post, p_models.RequestHelpPost):
+            if instance.user == instance.post.student.user:
+                return
+            noti_model = noti_models.StudentNotification
+            recipient = instance.post.student.user
+        elif isinstance(instance.post, p_models.OfferHelpPost):
+            if instance.user == instance.post.tutor.user:
+                return
+            noti_model = noti_models.TutorNotification
+            recipient = instance.post.tutor.user
+        else:
             return
         
-        noti_model = noti_models.StudentNotification if isinstance(
-            instance.post, p_models.RequestHelpPost
-        ) else noti_models.TutorNotification
         create_and_send_notification(
             noti_model, 
-            instance.post.student.user, 
+            recipient, 
             title, 
             content, 
             instance.post.course.id,

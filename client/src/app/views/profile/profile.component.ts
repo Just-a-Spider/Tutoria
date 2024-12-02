@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { User } from '../../classes/user.class';
-import { StudentProfile, TutorProfile } from '../../classes/profile.class';
-import { ProfileService } from '../../services/profile.service';
-import { environment } from '../../../environments/environment';
 import { FileUpload } from 'primeng/fileupload';
-import { ThemeService } from '../../services/misc/theme.service';
+import { environment } from '../../../environments/environment';
+import { StudentProfile, TutorProfile } from '../../classes/profile.class';
+import { User } from '../../classes/user.class';
+import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -36,10 +35,15 @@ export class ProfileView implements OnInit {
   ngOnInit() {
     this.mobile = window.innerWidth <= 768;
     if (this.mobile) {
-      this.mainClass = 'flex flex-column gap-4 w-full justify-content-center p-4';
+      this.mainClass =
+        'flex flex-column gap-4 w-full justify-content-center p-4';
       this.mainCardClass = 'profile-card-mobile';
     }
     this.user = this.authService.getUserValue();
+    this.getProfiles();
+  }
+
+  getProfiles() {
     this.profileService.getStudentProfile().subscribe({
       next: (response) => {
         this.studentProfile = response;
@@ -83,16 +87,26 @@ export class ProfileView implements OnInit {
     const file = event.files[0];
     this.profileService.uploadProfilePicture(file, mode).subscribe({
       next: (response) => {
-        if (mode === 'student') {
-          this.studentProfile.profile_picture = `${environment.hostUrl}${response.message}`;
+        if (environment.production) {
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'La imagen de perfil ha sido actualizada.',
+          });
+          // Refetch the profile picture
+          this.getProfiles();
         } else {
-          this.tutorProfile.profile_picture = `${environment.hostUrl}${response.message}`;
+          if (mode === 'student') {
+            this.studentProfile.profile_picture = `${environment.hostUrl}${response.message}`;
+          } else {
+            this.tutorProfile.profile_picture = `${environment.hostUrl}${response.message}`;
+          }
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'La imagen de perfil ha sido actualizada.',
+          });
         }
-        this.messagesService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'La imagen de perfil ha sido actualizada.',
-        });
       },
       error: (error) => {
         this.messagesService.add({

@@ -94,7 +94,10 @@ INSTALLED_APPS = [
     'notifications',
     'courses',
     'posts',
-    'tutoring_sessions'
+    'tutoring_sessions',
+
+    # S3
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -159,6 +162,20 @@ else:
             default=os.getenv('DATABASE_URL'),
             conn_max_age=600
         )
+    }
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "access_key": os.environ.get('AWS_ACCESS_KEY'),
+                "secret_key": os.environ.get('AWS_SECRET_ACCESS_KEY'),
+                "bucket_name": os.environ.get('AWS_STORAGE_BUCKET_NAME'),
+            },
+        },
+        "staticfiles": {
+            "BACKEND":'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        }
     }
 
 # Channels

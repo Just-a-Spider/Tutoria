@@ -2,6 +2,8 @@ asgiref==3.8.1
 attrs==24.2.0
 autobahn==24.4.2
 Automat==24.8.1
+boto3==1.35.71
+botocore==1.35.71
 certifi==2024.8.30
 cffi==1.17.0
 channels==4.1.0
@@ -16,6 +18,7 @@ dj-database-url==2.2.0
 Django==5.1
 django-cors-headers==4.4.0
 django-filter==24.3
+django-storages==1.14.4
 django-unfold==0.39.0
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
@@ -24,6 +27,7 @@ hyperlink==21.0.0
 idna==3.7
 incremental==24.7.2
 iniconfig==2.0.0
+jmespath==1.0.1
 msgpack==1.0.8
 mysqlclient==2.2.6
 numpy==2.1.1
@@ -45,10 +49,12 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 python3-openid==3.2.0
 pytz==2024.2
+random-username==1.0.2
 redis==5.0.8
 reportlab==4.2.2
 requests==2.32.3
 requests-oauthlib==2.0.0
+s3transfer==0.10.4
 service-identity==24.1.0
 setuptools==73.0.1
 six==1.16.0
