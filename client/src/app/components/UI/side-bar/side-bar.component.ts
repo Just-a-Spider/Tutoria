@@ -22,22 +22,26 @@ export class SideBarComponent implements OnInit {
     private router: Router,
     private coursesService: CoursesService,
     private themeService: ThemeService
-  ) {}
+  ) {
+    if (
+      window.location.pathname.includes('auth') ||
+      window.location.pathname.includes('admin')
+    ) {
+      this.isOnAuth = true;
+    }
+  }
 
   ngOnInit() {
     this.themeService.profileMode$.subscribe((mode) => {
       this.mode = mode;
     });
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
-        const url = event.urlAfterRedirects;
-        this.isOnAuth =
-          url.includes('/auth') || url.includes('/reset-password');
-        if (!this.isOnAuth) {
-          this.getCourses();
-        }
-      });
+    if (!this.isOnAuth && localStorage.getItem('gotCourses') === 'false') {
+      this.getCourses();
+      localStorage.setItem('gotCourses', 'true');
+    } else {
+      this.myCourses = JSON.parse(localStorage.getItem('myCourses') || '[]');
+      this.allCourses = JSON.parse(localStorage.getItem('allCourses') || '[]');
+    }
   }
 
   refresh() {
@@ -48,6 +52,7 @@ export class SideBarComponent implements OnInit {
     this.coursesService.getMyCourses().subscribe({
       next: (data: any) => {
         this.myCourses = data;
+        localStorage.setItem('myCourses', JSON.stringify(this.myCourses));
       },
       error: (error) => {
         console.error(error);
@@ -56,6 +61,7 @@ export class SideBarComponent implements OnInit {
     this.coursesService.getAllCourses().subscribe({
       next: (data: any) => {
         this.allCourses = data;
+        localStorage.setItem('allCourses', JSON.stringify(this.allCourses));
       },
       error: (error) => {
         console.error(error);

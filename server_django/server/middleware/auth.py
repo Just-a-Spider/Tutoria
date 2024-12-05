@@ -8,8 +8,6 @@ from server.utils.user_utils import set_token_cookie
 class CustomJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         is_mobile = request.headers.get('Auth-X-Mobile', 'False') == 'True'
-        print(request.headers)
-        print(request.COOKIES)
         
         if is_mobile:
             access_token = request.headers.get('Authorization')

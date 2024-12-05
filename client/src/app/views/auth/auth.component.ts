@@ -67,6 +67,7 @@ export class AuthView {
     if (this.loginFormGroup.valid) {
       this.authService.login(this.loginFormGroup.value).subscribe({
         next: () => {
+          localStorage.setItem('gotCourses', 'false');
           window.location.href = '';
         },
         error: (error) => {

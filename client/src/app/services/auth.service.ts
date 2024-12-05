@@ -40,6 +40,8 @@ export class AuthService {
   }
 
   googleLogin() {
+    localStorage.setItem('gotNotis', 'false');
+    localStorage.setItem('gotCourses', 'false');
     window.location.href = this.googleApiUrl;
   }
 
@@ -55,9 +57,9 @@ export class AuthService {
         withCredentials: true,
       })
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.userSubject.next(new User()); // Clear the user state
-          this.router.navigate(['/auth']);
+          window.location.href = '/auth';
         },
         error: (error) => {
           console.error(error);
