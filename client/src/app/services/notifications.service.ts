@@ -67,9 +67,7 @@ export class NotificationsService {
   }
 
   private getNotifications(mode: string): Observable<FullNotification[]> {
-    return this.http.get<FullNotification[]>(`${this.apiUrl}${mode}/`, {
-      withCredentials: true,
-    });
+    return this.http.get<FullNotification[]>(`${this.apiUrl}${mode}/`);
   }
 
   getStudentNotifications(): Observable<FullNotification[]> {
@@ -81,13 +79,9 @@ export class NotificationsService {
   }
 
   markSeen(notificationId: string, mode: string = 'student'): Observable<any> {
-    return this.http.get(`${this.apiUrl}${mode}/${notificationId}/`, {
-      withCredentials: true,
-    });
+    return this.http.get(`${this.apiUrl}${mode}/${notificationId}/`);
   }
   clearSeen(mode: string = 'student') {
-    return this.http.delete(`${this.apiUrl}${mode}/clear/`, {
-      withCredentials: true,
-    });
+    return this.http.delete(`${this.apiUrl}${mode}/clear/`);
   }
 }

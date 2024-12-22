@@ -12,6 +12,7 @@ class CourseModelSerializer(serializers.ModelSerializer):
     is_try_out_tutor = serializers.SerializerMethodField()
 
     def get_students(self, obj):
+        # ManytoManyField.count() is a method that returns the number of objects in the related object set
         return obj.students.count()
     
     def get_tutors(self, obj):

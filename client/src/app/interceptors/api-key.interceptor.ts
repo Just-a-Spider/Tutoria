@@ -7,6 +7,7 @@ export const apiKeyInterceptor: HttpInterceptorFn = (req, next) => {
     setHeaders: {
       'X-API-KEY': environment.apiKey,
     },
+    withCredentials: true
   });
   return next(req);
 };

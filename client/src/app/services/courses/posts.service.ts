@@ -25,9 +25,7 @@ export class PostsService {
   ): Observable<PageData> {
     const url =
       nextPrev === '' ? `${this.apiUrl}${courseId}/${endpoint}/` : nextPrev;
-    return this.http.get<PageData>(url, {
-      withCredentials: true,
-    });
+    return this.http.get<PageData>(url);
   }
 
   // -------------------------------------------------------------------------------
@@ -44,10 +42,7 @@ export class PostsService {
   createRequestHelpPost(courseId: string, data: RequestHelpPost) {
     return this.http.post(
       `${this.apiUrl}${courseId}/request-help-posts/`,
-      data,
-      {
-        withCredentials: true,
-      }
+      data
     );
   }
 
@@ -58,19 +53,14 @@ export class PostsService {
   }
 
   createOfferHelpPost(courseId: string, data: OfferHelpPost) {
-    return this.http.post(`${this.apiUrl}${courseId}/offer-help-posts/`, data, {
-      withCredentials: true,
-    });
+    return this.http.post(`${this.apiUrl}${courseId}/offer-help-posts/`, data);
   }
 
   // -------------------------------------------------------------------------------
   // Comments
   getComments(courseId: string, postType: string, postId: string) {
     return this.http.get(
-      `${this.apiUrl}${courseId}/${postType}-help-posts/${postId}/comments/`,
-      {
-        withCredentials: true,
-      }
+      `${this.apiUrl}${courseId}/${postType}-help-posts/${postId}/comments/`
     );
   }
 
@@ -83,10 +73,7 @@ export class PostsService {
   ) {
     return this.http.post(
       `${this.apiUrl}${courseId}/${postType}-help-posts/${postId}/comments/?profile_mode=${profileMode}`,
-      { content: comment },
-      {
-        withCredentials: true,
-      }
+      { content: comment }
     );
   }
 
@@ -95,19 +82,13 @@ export class PostsService {
   editPost(courseId: string, postType: string, postId: string, data: any) {
     return this.http.put(
       `${this.apiUrl}${courseId}/${postType}-help-posts/${postId}/`,
-      data,
-      {
-        withCredentials: true,
-      }
+      data
     );
   }
 
   deletePost(courseId: string, postType: string, postId: string) {
     return this.http.delete(
-      `${this.apiUrl}${courseId}/${postType}-help-posts/${postId}/`,
-      {
-        withCredentials: true,
-      }
+      `${this.apiUrl}${courseId}/${postType}-help-posts/${postId}/`
     );
   }
 

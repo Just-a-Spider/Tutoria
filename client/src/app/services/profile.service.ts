@@ -14,24 +14,21 @@ export class ProfileService {
 
   // STUDENT PROFILE
   getStudentProfile(): Observable<StudentProfile> {
-    return this.http.get<StudentProfile>(`${this.apiUrl}student/`, {
-      withCredentials: true,
-    });
+    return this.http.get<StudentProfile>(`${this.apiUrl}student/`);
   }
 
   // TUTOR PROFILE
   getTutorProfile(): Observable<TutorProfile> {
-    return this.http.get<TutorProfile>(`${this.apiUrl}tutor/`, {
-      withCredentials: true,
-    });
+    return this.http.get<TutorProfile>(`${this.apiUrl}tutor/`);
   }
 
   // FOR BOTH
   uploadProfilePicture(file: File, mode: string): Observable<any> {
     const formData = new FormData();
     formData.append('profile_picture', file);
-    return this.http.post(`${this.apiUrl}${mode}/upload-profile-picture/`, formData, {
-      withCredentials: true,
-    });
+    return this.http.post(
+      `${this.apiUrl}${mode}/upload-profile-picture/`,
+      formData
+    );
   }
 }

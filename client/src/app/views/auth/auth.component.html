@@ -37,12 +37,12 @@
         (click)="googleLogin()"
       />
       <h2 class="mb-3">{{ toggleForm ? "Regístrate" : "Bienvenido" }}</h2>
-      <!-- Form for login or register -->
-      @if (toggleForm === false) {
-      <!-- Login Form -->
       @if (messages.length > 0) {
       <p-messages [(value)]="messages" [closable]="false" />
       }
+      <!-- Form for login or register -->
+      @if (toggleForm === false) {
+      <!-- Login Form -->
       <form [formGroup]="loginFormGroup" class="flex flex-column gap-2 w-full">
         <input
           type="text"

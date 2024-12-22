@@ -12,7 +12,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return authService.getUser().pipe(
     take(1),
     map((user: User) => {
-      if (user.username) {
+      if (user.username !== '') {
         authService.setUser(user);
         return true;
       } else {

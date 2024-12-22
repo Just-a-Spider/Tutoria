@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private googleApiUrl = environment.apiUrl + 'oauth/login/google-oauth2/';
   private apiUrl = environment.apiUrl + 'auth/';
+  private userUrl = environment.apiUrl + 'user/';
   private userSubject: BehaviorSubject<User>;
   user$: Observable<User>;
 
@@ -28,15 +29,11 @@ export class AuthService {
   }
 
   register(data: any) {
-    return this.http.post(`${this.apiUrl}register/`, data, {
-      withCredentials: true,
-    });
+    return this.http.post(`${this.apiUrl}register/`, data);
   }
 
   login(data: any) {
-    return this.http.post(`${this.apiUrl}login/`, data, {
-      withCredentials: true,
-    });
+    return this.http.post(`${this.apiUrl}login/`, data);
   }
 
   googleLogin() {
@@ -46,24 +43,18 @@ export class AuthService {
   }
 
   getUser(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}me/`, {
-      withCredentials: true,
-    });
+    return this.http.get<User>(`${this.userUrl}me/`);
   }
 
   logout() {
-    this.http
-      .get(`${this.apiUrl}logout/`, {
-        withCredentials: true,
-      })
-      .subscribe({
-        next: () => {
-          this.userSubject.next(new User()); // Clear the user state
-          window.location.href = '/auth';
-        },
-        error: (error) => {
-          console.error(error);
-        },
-      });
+    this.http.get(`${this.apiUrl}logout/`).subscribe({
+      next: () => {
+        this.userSubject.next(new User()); // Clear the user state
+        window.location.href = '/auth';
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 }

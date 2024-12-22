@@ -115,6 +115,7 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',  # Google Auth
 ]
 
+# If enabled, add API Key Middleware
 if os.getenv('EAK', 'False') == 'True':
     MIDDLEWARE.append(
         'server.middleware.api_key.APIKeyMiddleware',  # API Key
