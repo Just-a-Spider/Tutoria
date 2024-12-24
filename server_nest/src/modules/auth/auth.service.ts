@@ -9,7 +9,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { CoursesService } from '../courses/courses.service';
+import { CoursesService } from '../courses/services/courses.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { LoginDto } from './dto/login.dto';
