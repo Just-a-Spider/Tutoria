@@ -16,7 +16,6 @@ export class ProfilesService {
     private readonly tutorProfileRepository: EntityRepository<TutorProfile>,
   ) {}
 
-  // Helper methods
   async getBothProfiles(
     userId: number,
     mode: 'student' | 'tutor' | 'both' = 'both',
