@@ -9,12 +9,18 @@ import { UserModule } from './modules/user/user.module';
 import { TokenService } from './utils/token.service';
 import { WebsocketModule } from './utils/websocket.module';
 import { CoursesModule } from './modules/courses/courses.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'secret',
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '1d' },
     }),
     MikroOrmModule.forRoot({ ...mikroOrmConfig }),
     UserModule,

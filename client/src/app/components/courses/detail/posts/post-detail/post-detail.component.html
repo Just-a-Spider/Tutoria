@@ -20,14 +20,16 @@
       <h4 class="font-bold">Comentarios</h4>
     </div>
     <div class="flex flex-row align-items-center justify-content-between gap-3">
-      <!-- Input text for the Commnet -->
+      <!-- Input text for the Comment -->
       <input
         pInputText
         placeholder="Escribe un comentario"
         class="w-full"
         [(ngModel)]="comment"
+        (keydown.enter)="sendComment()"
       />
       <p-button
+        type="submit"
         label="Enviar"
         icon="pi pi-send"
         rounded="true"
