@@ -5,12 +5,12 @@ import { plainToClass } from 'class-transformer';
 import {
   StudentProfile,
   TutorProfile,
-} from '../profiles/entities/profiles.entity';
-import { ProfilesService } from '../profiles/profiles.service';
-import { CourseDto } from './dto/course.dto';
-import { Course } from './entities/course.entity';
-import { Faculty } from './entities/faculty.entity';
-import { TryOutTutor } from './entities/tryout-tutor.entity';
+} from '../../profiles/entities/profiles.entity';
+import { ProfilesService } from '../../profiles/profiles.service';
+import { CourseDto } from '../dto/course.dto';
+import { Course } from '../entities/course.entity';
+import { Faculty } from '../entities/faculty.entity';
+import { TryOutTutor } from '../entities/tryout-tutor.entity';
 
 @Injectable()
 export class CoursesService {
@@ -80,38 +80,6 @@ export class CoursesService {
     });
 
     return courseDto;
-  }
-
-  // Helper methods
-  async findOrCreateFaculty(
-    facultyName: string,
-  ): Promise<{ faculty: Faculty; created: boolean }> {
-    let faculty = await this.facultyRepository.findOne({ name: facultyName });
-    if (faculty) {
-      return { faculty: faculty, created: false };
-    }
-    faculty = await this.facultyRepository.create({ name: facultyName });
-    await this.facultyRepository.getEntityManager().persistAndFlush(faculty);
-    return { faculty: faculty, created: true };
-  }
-
-  async findOrCreateCourse(
-    courseName: string,
-    faculty: number,
-    studentProfile: StudentProfile,
-  ): Promise<{ course: Course; created: boolean }> {
-    let course = await this.courseRepository.findOne({ name: courseName });
-    if (course) {
-      await this.linkStudentToCourse(studentProfile, course.id);
-      return { course: course, created: false };
-    }
-    course = await this.courseRepository.create({
-      name: courseName,
-      faculty: faculty,
-    });
-    await this.courseRepository.getEntityManager().persistAndFlush(course);
-    await this.linkStudentToCourse(studentProfile, course.id);
-    return { course: course, created: true };
   }
 
   async linkStudentToCourse(studentProfile: StudentProfile, course: number) {
@@ -193,5 +161,61 @@ export class CoursesService {
       isTryOut: course.try_out_tutors.contains(tryOutTutor),
       tryOutTutor: tryOutTutor,
     };
+  }
+
+  // Helper methods
+  async findOrCreateFaculty(
+    facultyName: string,
+  ): Promise<{ faculty: Faculty; created: boolean }> {
+    let faculty = await this.facultyRepository.findOne({ name: facultyName });
+    if (faculty) {
+      return { faculty: faculty, created: false };
+    }
+    faculty = await this.facultyRepository.create({ name: facultyName });
+    await this.facultyRepository.getEntityManager().persistAndFlush(faculty);
+    return { faculty: faculty, created: true };
+  }
+
+  async findOrCreateCourse(
+    courseName: string,
+    faculty: number,
+    studentProfile: StudentProfile,
+  ): Promise<{ course: Course; created: boolean }> {
+    let course = await this.courseRepository.findOne({ name: courseName });
+    if (course) {
+      await this.linkStudentToCourse(studentProfile, course.id);
+      return { course: course, created: false };
+    }
+    course = await this.courseRepository.create({
+      name: courseName,
+      faculty: faculty,
+    });
+    await this.courseRepository.getEntityManager().persistAndFlush(course);
+    await this.linkStudentToCourse(studentProfile, course.id);
+    return { course: course, created: true };
+  }
+
+  async getListedMemberFromACourse(
+    userId: number,
+    courseId: number,
+    mode: 'students' | 'tutors' | 'try_out_tutors',
+  ): Promise<number[]> {
+    const course = await this.courseRepository.findOneOrFail(
+      { id: courseId },
+      { populate: [mode] },
+    );
+
+    const usersId = course[mode]
+      .getItems()
+      .map((profile: StudentProfile | TutorProfile | TryOutTutor) => {
+        if (profile instanceof TryOutTutor) {
+          return profile.tutor.user.id;
+        } else {
+          return profile.user.id;
+        }
+      })
+      .filter((id: number) => id !== userId);
+
+    return usersId;
   }
 }

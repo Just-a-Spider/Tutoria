@@ -22,7 +22,7 @@ export abstract class BaseNotification {
   @Property({ type: 'uuid', nullable: true })
   instanceId?: string;
 
-  @Property({ type: 'uuid', nullable: true })
+  @Property({ type: 'string', nullable: true, default: null })
   subinstanceId?: string;
 
   @ManyToOne(() => User)

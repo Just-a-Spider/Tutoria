@@ -7,8 +7,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt.guard';
-import { CoursesService } from './courses.service';
+import { JwtAuthGuard } from '../../auth/jwt.guard';
+import { CoursesService } from '../services/courses.service';
 
 @Controller('courses')
 @UseGuards(JwtAuthGuard)

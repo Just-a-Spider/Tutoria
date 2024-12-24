@@ -847,12 +847,14 @@
         },
         "subinstance_id": {
           "name": "subinstance_id",
-          "type": "uuid",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "uuid"
+          "length": 255,
+          "default": "null",
+          "mappedType": "string"
         },
         "user_id": {
           "name": "user_id",
@@ -1219,12 +1221,14 @@
         },
         "subinstance_id": {
           "name": "subinstance_id",
-          "type": "uuid",
+          "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "uuid"
+          "length": 255,
+          "default": "null",
+          "mappedType": "string"
         },
         "user_id": {
           "name": "user_id",
