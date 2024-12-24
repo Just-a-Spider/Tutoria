@@ -1,11 +1,43 @@
+import { EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
-import { DynamicWebSocketAdapter } from '../../adapters/dynamic-websocket.adapter';
+import { CreateNotificationDto } from './dto/create-notification.dto';
+import {
+  StudentNotification,
+  TutorNotification,
+} from './entities/notification.entity';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly wsAdapter: DynamicWebSocketAdapter) {}
+  constructor(
+    @InjectRepository(StudentNotification)
+    private readonly studentNotificationRepository: EntityRepository<StudentNotification>,
+    @InjectRepository(TutorNotification)
+    private readonly tutorNotificationRepository: EntityRepository<TutorNotification>,
+  ) {}
 
-  async sendNotificationToUser(userId: string, message: any) {
-    await this.wsAdapter.sendToUser(userId, message);
+  async createNotification(
+    forStudent: boolean,
+    notificationData: CreateNotificationDto,
+  ): Promise<void> {
+    if (forStudent) {
+      const noti = this.studentNotificationRepository.create(notificationData);
+      this.studentNotificationRepository
+        .getEntityManager()
+        .persistAndFlush(noti);
+    } else {
+      const noti = this.tutorNotificationRepository.create(notificationData);
+      this.tutorNotificationRepository.getEntityManager().persistAndFlush(noti);
+    }
+  }
+
+  async getStudentNotifications(
+    userId: number,
+  ): Promise<StudentNotification[]> {
+    return this.studentNotificationRepository.find({ user: userId });
+  }
+
+  async getTutorNotifications(userId: number): Promise<TutorNotification[]> {
+    return this.tutorNotificationRepository.find({ user: userId });
   }
 }

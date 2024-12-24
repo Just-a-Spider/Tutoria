@@ -19,9 +19,9 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
   private readonly logger = new Logger(DynamicWebSocketAdapter.name);
   private readonly redisClient: Redis;
   private socketServer: WebSocket.Server;
-  private connections: Map<string, WebSocket[]> = new Map();
   private upgradedSockets: WeakMap<any, boolean> = new WeakMap();
   private httpServer: http.Server;
+  public connections: Map<number, WebSocket[]> = new Map();
 
   constructor(
     private app: INestApplicationContext,
@@ -123,7 +123,6 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
     this.socketServer.handleUpgrade(request, socket, head, (ws) => {
       (ws as any).userId = user.sub;
       this.socketServer.emit('connection', ws, request);
-      this.createMessageHandler(ws, user.sub);
     });
   }
 
@@ -191,10 +190,10 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
   }
 
   // Create server connection
-  async createMessageHandler(socket: WebSocket, userId: string): Promise<void> {
+  async createMessageHandler(socket: WebSocket, userId: number): Promise<void> {
     // Store connection
     if (!this.connections.has(userId)) {
-      this.connections.set(userId, []);
+      await this.connections.set(userId, []);
     }
     this.connections.get(userId).push(socket);
 
@@ -223,18 +222,19 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
   close(socket: WebSocket): void {
     socket.close();
   }
-
-  // Send message to a specific user
-  async sendToUser(userId: string, message: any): Promise<void> {
-    const connections = this.connections.get(userId) || [];
-
-    connections.forEach((socket) => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(message));
-      }
-    });
-
-    // Optionally store in Redis for offline notifications
+  async sendToUser(userId: number, message: any): Promise<void> {
+    const userConnections = this.connections.get(userId);
+    if (!userConnections || userConnections.length === 0) {
+      console.error(`No connections found for user: ${userId}`);
+      return;
+    }
+    const socket = userConnections[0] as WebSocket;
+    if (socket) {
+      socket.send(JSON.stringify(message));
+    } else {
+      console.error(`Socket not found for user: ${userId}`);
+    }
+    // Optional: store message in Redis
     await this.redisClient.rpush(
       `user:${userId}:notifications`,
       JSON.stringify(message),
