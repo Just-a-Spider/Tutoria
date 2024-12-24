@@ -8,9 +8,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt.guard';
-import { CreatePostDto } from './dto/create-post.dto';
-import { PostsService } from './posts.service';
+import { JwtAuthGuard } from '../../auth/jwt.guard';
+import { CreatePostDto } from '../dto/create-post.dto';
+import { PostsService } from '../services/posts.service';
 
 @Controller('courses/:courseId')
 @UseGuards(JwtAuthGuard)
@@ -18,14 +18,24 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get('my-posts')
-  getMyPosts(@Req() req, @Param('courseId') courseId: number) {
+  getMyPosts(
+    @Req() req,
+    @Param('courseId') courseId: number,
+    @Query('offset') offset: number,
+  ) {
     const userId = req.user.id;
-    return this.postsService.getMyPosts(userId, courseId);
+    const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
+    return this.postsService.getMyPosts(userId, courseId, offset, baseUrl);
   }
 
   @Get('request-help-posts')
-  getRequestHelpPosts(@Param('courseId') courseId: number) {
-    return this.postsService.getPosts(courseId, 'request');
+  getRequestHelpPosts(
+    @Req() req,
+    @Param('courseId') courseId: number,
+    @Query('offset') offset: number,
+  ) {
+    const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
+    return this.postsService.getPosts(courseId, 'request', offset, baseUrl);
   }
 
   @Post('request-help-posts')
@@ -44,8 +54,13 @@ export class PostsController {
   }
 
   @Get('offer-help-posts')
-  getOfferHelpPosts(@Param('courseId') courseId: number) {
-    return this.postsService.getPosts(courseId, 'offer');
+  getOfferHelpPosts(
+    @Req() req,
+    @Param('courseId') courseId: number,
+    @Query('offset') offset: number,
+  ) {
+    const baseUrl = `${req.protocol}://${req.get('host')}${req.originalUrl.split('?')[0]}`;
+    return this.postsService.getPosts(courseId, 'offer', offset, baseUrl);
   }
 
   @Post('offer-help-posts')
