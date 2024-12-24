@@ -1,18 +1,16 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
 import { ProfilesModule } from '../profiles/profiles.module';
-import { CoursesController } from './courses.controller';
-import { CoursesService } from './courses.service';
+import { CoursesController } from './controllers/courses.controller';
+import { PostsController } from './controllers/posts.controller';
+import { Comment } from './entities/comment.entity';
 import { Course } from './entities/course.entity';
 import { Faculty } from './entities/faculty.entity';
-import {
-  Comment,
-  OfferHelpPost,
-  RequestHelpPost,
-} from './entities/post.entity';
+import { OfferHelpPost } from './entities/offer-help-post.entity';
+import { RequestHelpPost } from './entities/request-help-post.entity';
 import { TryOutTutor } from './entities/tryout-tutor.entity';
-import { PostsService } from './posts.service';
-import { PostsController } from './posts.controller';
+import { CoursesService } from './services/courses.service';
+import { PostsService } from './services/posts.service';
 
 @Module({
   imports: [
