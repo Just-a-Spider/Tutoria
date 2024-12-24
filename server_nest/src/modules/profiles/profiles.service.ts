@@ -1,12 +1,14 @@
 import { EntityRepository } from '@mikro-orm/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { StudentProfile, TutorProfile } from './entities/profiles.entity';
 
 @Injectable()
 export class ProfilesService {
+  private logger: Logger = new Logger(ProfilesService.name);
+
   constructor(
     @InjectRepository(StudentProfile)
     private readonly studentProfileRepository: EntityRepository<StudentProfile>,
@@ -14,6 +16,70 @@ export class ProfilesService {
     private readonly tutorProfileRepository: EntityRepository<TutorProfile>,
   ) {}
 
+  // Helper methods
+  async getBothProfiles(
+    userId: number,
+    mode: 'student' | 'tutor' | 'both' = 'both',
+  ): Promise<{
+    studentProfile?: StudentProfile;
+    tutorProfile?: TutorProfile;
+  }> {
+    let studentProfile: StudentProfile | undefined;
+    let tutorProfile: TutorProfile | undefined;
+
+    if (mode === 'student' || mode === 'both') {
+      studentProfile = await this.studentProfileRepository.findOne({
+        user: userId,
+      });
+    }
+
+    if (mode === 'tutor' || mode === 'both') {
+      tutorProfile = await this.tutorProfileRepository.findOne({
+        user: userId,
+      });
+    }
+
+    return {
+      studentProfile,
+      tutorProfile,
+    };
+  }
+
+  async updateProfilePicture(
+    userId: number,
+    file: Express.Multer.File,
+    mode: 'student' | 'tutor',
+  ): Promise<string> {
+    this.logger.log(mode);
+    const profile =
+      mode === 'student'
+        ? await this.getBothProfiles(userId, 'student')
+        : await this.getBothProfiles(userId, 'tutor');
+
+    const selectecProfile =
+      mode === 'student' ? profile.studentProfile : profile.tutorProfile;
+
+    const em =
+      mode === 'student'
+        ? this.studentProfileRepository
+        : this.tutorProfileRepository;
+
+    if (!selectecProfile) {
+      throw new Error('Profile not found');
+    }
+
+    // Delete the current profile picture if it exists
+    if (selectecProfile.profile_picture) {
+      await fs.unlink(join(process.cwd(), selectecProfile.profile_picture));
+    }
+
+    selectecProfile.profile_picture = file.path;
+    await em.getEntityManager().flush();
+
+    return selectecProfile.profile_picture;
+  }
+
+  // Helper methods
   async findOrCreateBothProfiles(userId: number): Promise<{
     studentProfile: StudentProfile;
     tutorProfile: TutorProfile;
@@ -63,47 +129,5 @@ export class ProfilesService {
       newStudentProfile: studentProfile,
       newTutorProfile: tutorProfile,
     };
-  }
-
-  async getBothProfiles(userId: number): Promise<{
-    studentProfile: string;
-    tutorProfile: string;
-  }> {
-    const studentProfile = await this.studentProfileRepository.findOne({
-      user: userId,
-    });
-    const tutorProfile = await this.tutorProfileRepository.findOne({
-      user: userId,
-    });
-
-    return {
-      studentProfile: studentProfile?.id,
-      tutorProfile: tutorProfile?.id,
-    };
-  }
-
-  async updateProfilePicture(
-    userId: number,
-    file: Express.Multer.File,
-  ): Promise<string> {
-    const profile =
-      (await this.studentProfileRepository.findOne({ user: userId })) ||
-      (await this.tutorProfileRepository.findOne({ user: userId }));
-
-    if (!profile) {
-      throw new Error('Profile not found');
-    }
-
-    // Delete the current profile picture if it exists
-    if (profile.profile_picture) {
-      await fs.unlink(
-        join(__dirname, '..', '..', '..', profile.profile_picture),
-      );
-    }
-
-    profile.profile_picture = file.path;
-    await this.studentProfileRepository.nativeDelete({ user: userId });
-
-    return profile.profile_picture;
   }
 }

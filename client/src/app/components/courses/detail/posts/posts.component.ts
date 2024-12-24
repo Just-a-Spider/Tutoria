@@ -3,9 +3,9 @@ import {
   OfferHelpPost,
   RequestHelpPost,
 } from '../../../../classes/posts.class';
+import { PageData } from '../../../../interfaces/page-data.interface';
 import { PostsService } from '../../../../services/courses/posts.service';
 import { ThemeService } from '../../../../services/misc/theme.service';
-import { PageData } from '../../../../interfaces/page-data.interface';
 
 interface Column {
   field: string;

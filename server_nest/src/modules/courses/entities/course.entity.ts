@@ -1,4 +1,8 @@
 import {
+  StudentProfile,
+  TutorProfile,
+} from '@/modules/profiles/entities/profiles.entity';
+import {
   Collection,
   Entity,
   ManyToMany,
@@ -8,10 +12,7 @@ import {
   types,
 } from '@mikro-orm/core';
 import { Faculty } from './faculty.entity';
-import {
-  StudentProfile,
-  TutorProfile,
-} from '@/modules/profiles/entities/profiles.entity';
+import { TryOutTutor } from './tryout-tutor.entity';
 
 @Entity()
 export class Course {
@@ -29,4 +30,7 @@ export class Course {
 
   @ManyToMany(() => TutorProfile)
   tutors = new Collection<TutorProfile>(this);
+
+  @ManyToMany(() => TryOutTutor)
+  try_out_tutors = new Collection<TryOutTutor>(this);
 }

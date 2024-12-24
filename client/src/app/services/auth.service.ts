@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private googleApiUrl = environment.apiUrl + 'oauth/login/google-oauth2/';
   private apiUrl = environment.apiUrl + 'auth/';
+  private userUrl = environment.apiUrl + 'user/';
   private userSubject: BehaviorSubject<User>;
   user$: Observable<User>;
 
@@ -46,7 +47,7 @@ export class AuthService {
   }
 
   getUser(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}me/`, {
+    return this.http.get<User>(`${this.userUrl}me/`, {
       withCredentials: true,
     });
   }

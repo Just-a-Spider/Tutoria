@@ -31,7 +31,7 @@ export class TutorProfile extends Profile {
   rating: number;
 
   @Property({ type: types.integer, default: 0 })
-  helped: string;
+  helped: number;
 
   // Relationship 1 to 1 to User
   @OneToOne({
