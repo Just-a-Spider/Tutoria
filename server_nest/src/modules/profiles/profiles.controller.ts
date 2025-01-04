@@ -1,3 +1,4 @@
+import { getStaticUrl } from '@/utils/static-url.util';
 import {
   Controller,
   Get,
@@ -13,7 +14,6 @@ import { diskStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { StudentProfileDto, TutorProfileDto } from './dto/profiles.dto';
 import { ProfilesService } from './profiles.service';
-import { getStaticUrl } from '@/utils/static-url.util';
 
 @Controller('profiles')
 @UseGuards(JwtAuthGuard)

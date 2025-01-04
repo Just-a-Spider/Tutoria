@@ -9,11 +9,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request) => {
-          return request?.cookies?.access_token;
+          const isMobile = request?.headers?.['auth-x-mobile'] === 'true';
+          if (isMobile) {
+            return request?.headers?.authorization?.replace('Bearer ', '');
+          } else {
+            return request?.cookies?.access_token;
+          }
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'secret',
+      secretOrKey: process.env.JWT_SECRET,
     });
   }
 
