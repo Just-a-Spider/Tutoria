@@ -21,6 +21,7 @@
       "@/*": ["src/*"],
       "@adapters/*": ["src/adapters/*"],
       "@modules/*": ["src/modules/*"],
+      "@strategies/*": ["src/strategies/*"],
       "@utils/*": ["src/utils/*"]
     }
   }

@@ -13,9 +13,7 @@ async function bootstrap() {
   // Create and connect the custom WebSocket adapter
   const wsAdapter = new DynamicWebSocketAdapter(app);
   wsAdapter.setHttpServer(app.getHttpServer());
-  await wsAdapter.connectToRedis(
-    process.env.REDIS_URL || 'redis://localhost:6379',
-  );
+  await wsAdapter.connectToRedis(process.env.REDIS_URL);
   app.useWebSocketAdapter(wsAdapter);
 
   // Rest of your existing configuration...
@@ -23,7 +21,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+    origin: process.env.CORS_ORIGIN,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
       'content-type',

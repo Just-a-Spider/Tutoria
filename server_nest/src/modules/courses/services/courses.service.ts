@@ -64,9 +64,8 @@ export class CoursesService {
 
     const isStudent = course.students.contains(studentProfile);
     const isTutor = course.tutors.contains(tutorProfile);
-    const isTryOutTutor = course.try_out_tutors
-      .getItems()
-      .some((t) => t.id === tutorProfile.id);
+    const { isTryOut } = await this.isTryOutTutor(courseId, tutorProfile);
+    const isTryOutTutor = isTryOut;
 
     const courseDto = plainToClass(CourseDto, {
       ...course,
@@ -111,24 +110,31 @@ export class CoursesService {
     );
 
     const profile = isStudent ? studentProfile : tutorProfile;
-    const collection = isStudent ? course.students : course.tutors;
 
     if (!isStudent) {
       const { isTryOut, tryOutTutor } = await this.isTryOutTutor(
         courseId,
         tutorProfile,
       );
-      if (isTryOut) {
-        if (mode === 'add') {
-          course.try_out_tutors.add(tryOutTutor);
-        } else {
-          course.try_out_tutors.remove(tryOutTutor);
-        }
-
-        await this.courseRepository.getEntityManager().persistAndFlush(course);
-        return;
+      if (mode === 'add' && !isTryOut && !tryOutTutor) {
+        const newTryOutTutor = this.tryOutTutorRepository.create({
+          tutor: tutorProfile,
+        });
+        course.try_out_tutors.add(newTryOutTutor);
+        await this.tryOutTutorRepository
+          .getEntityManager()
+          .persistAndFlush(newTryOutTutor);
+      } else if (mode === 'remove' && isTryOut && tryOutTutor) {
+        course.try_out_tutors.remove(tryOutTutor);
+        await this.tryOutTutorRepository
+          .getEntityManager()
+          .removeAndFlush(tryOutTutor);
       }
+      this.courseRepository.getEntityManager().persistAndFlush(course);
+      return;
     }
+
+    const collection = isStudent ? course.students : course.tutors;
 
     if (mode === 'add') {
       collection.add(profile);

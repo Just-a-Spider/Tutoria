@@ -9,7 +9,7 @@ import { ProfilesModule } from '../profiles/profiles.module';
 import { UserModule } from '../user/user.module';
 import { AuthController, OAuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { GoogleStrategy } from './strategies/google.strategy';
+import { GoogleStrategy } from '@strategies/google.strategy';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     PassportModule,
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: process.env.JWT_SECRET || 'secret',
+        secret: process.env.JWT_SECRET,
         signOptions: { expiresIn: '1h' },
       }),
     }),

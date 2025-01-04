@@ -8,19 +8,21 @@ import { UserService } from '@modules/user/user.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { JwtService } from '@nestjs/jwt';
+import { GoogleStrategy } from '@strategies/google.strategy';
 import * as bcrypt from 'bcrypt';
 import { CoursesService } from '../courses/services/courses.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
 import { LoginDto } from './dto/login.dto';
-import { oauthClient } from './oauth/client';
 
 @Injectable()
 export class AuthService {
   // Logger
   private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly jwtService: JwtService,
+    private readonly googleStrategy: GoogleStrategy,
     private readonly usersService: UserService,
     private readonly profilesService: ProfilesService,
     private readonly coursesService: CoursesService,
@@ -72,23 +74,16 @@ export class AuthService {
 
   // For Google OAuth
   async getGoogleOAuthUrl(): Promise<string> {
-    return oauthClient.generateAuthUrl({
-      scope: [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/classroom.courses.readonly',
-        'https://www.googleapis.com/auth/classroom.rosters.readonly',
-      ],
-      prompt: 'consent',
+    return this.googleStrategy.oauthClient.generateAuthUrl({
+      scope: this.googleStrategy.scope,
+      prompt: this.googleStrategy.prompt,
     });
   }
 
   async googleLogin(googleLoginDto: GoogleLoginDto): Promise<any> {
-    const ticket = await oauthClient.verifyIdToken({
+    const ticket = await this.googleStrategy.oauthClient.verifyIdToken({
       idToken: googleLoginDto.idToken,
-      audience:
-        process.env.GOOGLE_CLIENT_ID ||
-        '537012742971-r468a4u676c5vruvd6rsrjhd36vdqp10.apps.googleusercontent.com',
+      audience: this.googleStrategy.audience,
     });
     const googlePayload = ticket.getPayload();
     const { user, created } =
