@@ -9,9 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { GoogleLoginDto } from './dto/google-login.dto';
 import { LoginDto } from './dto/login.dto';
-import { oauthClient } from './oauth/client';
 
 @Controller('auth')
 export class AuthController {
@@ -67,18 +65,13 @@ export class OAuthController {
     }
 
     try {
-      const { tokens } = await oauthClient.getToken(code);
-      const googleLoginDto = new GoogleLoginDto();
-      googleLoginDto.idToken = tokens.id_token;
-      googleLoginDto.accessToken = tokens.access_token;
-
-      const payload = await this.authService.googleLogin(googleLoginDto);
+      const payload = await this.authService.googleLogin(code);
       res.cookie('access_token', payload.access_token, {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
       });
-      return res.redirect(process.env.FRONTEND_URL || 'http://localhost:4200');
+      return res.redirect(process.env.FRONTEND_URL);
     } catch (error) {
       console.error(error);
       return res

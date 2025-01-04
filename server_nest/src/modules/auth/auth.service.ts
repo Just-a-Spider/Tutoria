@@ -80,7 +80,12 @@ export class AuthService {
     });
   }
 
-  async googleLogin(googleLoginDto: GoogleLoginDto): Promise<any> {
+  async googleLogin(code: any): Promise<any> {
+    const { tokens } = await this.googleStrategy.oauthClient.getToken(code);
+    const googleLoginDto = new GoogleLoginDto();
+    googleLoginDto.idToken = tokens.id_token;
+    googleLoginDto.accessToken = tokens.access_token;
+
     const ticket = await this.googleStrategy.oauthClient.verifyIdToken({
       idToken: googleLoginDto.idToken,
       audience: this.googleStrategy.audience,
