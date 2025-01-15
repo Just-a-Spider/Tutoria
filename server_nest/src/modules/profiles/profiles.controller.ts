@@ -10,17 +10,21 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { StudentProfileDto, TutorProfileDto } from './dto/profiles.dto';
 import { ProfilesService } from './profiles.service';
 
+@ApiTags('Profiles')
 @Controller('profiles')
 @UseGuards(JwtAuthGuard)
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 
   @Get('student')
+  @ApiOperation({ summary: 'Get the student profile' })
+  @ApiResponse({ status: 200, description: 'Return the student profile' })
   async getStudentProfile(@Req() req) {
     const userId = req.user.id;
     const profile = await this.profilesService.getBothProfiles(
@@ -34,6 +38,8 @@ export class ProfilesController {
   }
 
   @Get('tutor')
+  @ApiOperation({ summary: 'Get the tutor profile' })
+  @ApiResponse({ status: 200, description: 'Return the tutor profile' })
   async getTutorProfile(@Req() req) {
     const userId = req.user.id;
     const profile = await this.profilesService.getBothProfiles(userId, 'tutor');
@@ -47,6 +53,17 @@ export class ProfilesController {
   }
 
   @Post(':mode/upload-profile-picture')
+  @ApiOperation({ summary: 'Upload profile picture' })
+  @ApiResponse({
+    status: 201,
+    description: 'Profile picture uploaded successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid file type' })
+  @ApiParam({
+    name: 'mode',
+    enum: ['student', 'tutor'],
+    description: 'Mode of the profile (student or tutor)',
+  })
   @UseInterceptors(
     FileInterceptor('profile_picture', {
       storage: diskStorage({
