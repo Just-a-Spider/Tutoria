@@ -1,21 +1,18 @@
-export class CreateNotificationDto {
-  title: string;
-  content: string;
-  instanceId: string;
-  subinstanceId: string;
-  user: number;
+import { ApiProperty } from '@nestjs/swagger';
 
-  constructor(
-    title: string,
-    content: string,
-    instanceId: string,
-    subinstanceId: string,
-    user: number,
-  ) {
-    this.title = title;
-    this.content = content;
-    this.instanceId = instanceId;
-    this.subinstanceId = subinstanceId;
-    this.user = user;
-  }
+export class CreateNotificationDto {
+  @ApiProperty({ description: 'Title of the notification' })
+  title: string;
+
+  @ApiProperty({ description: 'Content of the notification' })
+  content: string;
+
+  @ApiProperty({ description: 'Instance ID related to the notification' })
+  instanceId: string;
+
+  @ApiProperty({ description: 'Sub-instance ID related to the notification' })
+  subinstanceId: string;
+
+  @ApiProperty({ description: 'User ID associated with the notification' })
+  user: number;
 }
