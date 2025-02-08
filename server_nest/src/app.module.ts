@@ -1,6 +1,5 @@
 import { PaginatorModule } from '@/lib/paginator/paginator.module';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -18,6 +17,12 @@ import { WebsocketModule } from './utils/websocket.module';
 
 @Module({
   imports: [
+    // Static files from the Angular app
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'client-dist/client/browser'),
+    //   exclude: ['/api*'],
+    // }),
+
     // Config
     ConfigModule.forRoot({
       isGlobal: true,
@@ -66,21 +71,7 @@ import { WebsocketModule } from './utils/websocket.module';
     }),
 
     // Database
-    MikroOrmModule.forRoot({
-      driver: PostgreSqlDriver,
-      dbName: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      port: parseInt(process.env.DB_PORT),
-      host: process.env.DB_HOST,
-      migrations: {
-        tableName: 'mikro_orm_migrations',
-      },
-      baseDir: process.cwd(),
-      entities: ['dist/modules/**/*.entity.js'],
-      entitiesTs: ['src/modules/**/*.entity.ts'],
-      debug: false,
-    }),
+    MikroOrmModule.forRoot(),
 
     // Modules
     UserModule,

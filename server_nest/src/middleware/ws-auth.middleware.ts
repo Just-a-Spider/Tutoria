@@ -1,31 +1,33 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { getCookie } from '@/utils/cookie.util';
+import { TokenService } from '@/utils/token.service';
+import { INestApplicationContext } from '@nestjs/common';
 import * as http from 'http';
-import * as url from 'url';
 
-export class WsAuthGuard {
-  constructor(private readonly jwtService: any) {}
+export class WsAuth {
   // Authenticate user (implement your logic)
-  private async authenticateUser(
-    userId: string,
+  async authenticateUser(
     request: http.IncomingMessage,
-  ): Promise<boolean> {
-    // Get the cookies from the request
+    app: INestApplicationContext,
+  ): Promise<{ success: boolean; message: string; user?: any }> {
+    // Check if the request has cookies
     const cookies = request.headers.cookie;
-    console.log('Cookies:', cookies);
-    return true;
-  }
-
-  // Extract token from request
-  private extractToken(request: http.IncomingMessage): string | null {
-    // Check Authorization header
-    const authHeader = request.headers.authorization;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      return authHeader.split(' ')[1];
+    if (!cookies) {
+      return { success: false, message: 'No cookies provided' };
     }
 
-    // Check query parameters
-    const parsedUrl = url.parse(request.url, true);
-    return (parsedUrl.query.token as string) || null;
+    // Get the access_token from the cookies
+    const accessToken = getCookie(cookies, 'access_token');
+    if (!accessToken) {
+      return { success: false, message: 'No access token provided' };
+    }
+
+    // Verify the token
+    const user = await app.get(TokenService).verifyToken(accessToken);
+    if (!user || user === undefined || user.sub === undefined) {
+      return { success: false, message: 'Invalid user' };
+    }
+    return { success: true, message: 'User authenticated', user };
   }
 }

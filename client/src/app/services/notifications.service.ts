@@ -39,7 +39,7 @@ export class NotificationsService {
       .subscribe({
         next: (user: User) => {
           const userId = user.id;
-          const wsUrl = `${this.socketUrl}${userId}/`;
+          const wsUrl = `${this.socketUrl}`;
 
           this.socket = new WebSocket(wsUrl);
 
