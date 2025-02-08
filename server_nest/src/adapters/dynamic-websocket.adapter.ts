@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { getCookie } from '@/utils/cookie.util';
-import { TokenService } from '@/utils/token.service';
+import { WsAuth } from '@/middleware/ws-auth.middleware';
 import {
   INestApplicationContext,
   Logger,
@@ -17,6 +16,7 @@ import * as WebSocket from 'ws';
 
 export class DynamicWebSocketAdapter implements WebSocketAdapter {
   private readonly logger = new Logger(DynamicWebSocketAdapter.name);
+  private readonly wsAuth = new WsAuth();
   private readonly redisClient: Redis;
   private socketServer: WebSocket.Server;
   private upgradedSockets: WeakMap<any, boolean> = new WeakMap();
@@ -90,7 +90,7 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
     // Check if the request is for the WebSocket endpoint
     if (!request.url.startsWith('/ws/notifications/')) {
       socket.destroy();
-      this.logger.error('Invalid WebSocket endpoint:');
+      this.logger.error('Invalid WebSocket endpoint');
       return;
     }
 
@@ -98,26 +98,18 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
     if (this.upgradedSockets.has(socket)) {
       this.logger.error('Socket already upgraded');
       return;
-    }
-    this.upgradedSockets.set(socket, true);
-
-    // Perform Authentication here when needed
-    const cookies = request.headers.cookie;
-    if (!cookies) {
-      socket.destroy();
-      return;
-    }
-    // Get the access_token from the cookies
-    const accessToken = getCookie(cookies, 'access_token');
-    if (!accessToken) {
-      socket.destroy();
-      return;
+    } else {
+      this.upgradedSockets.set(socket, true);
     }
 
-    // Verify the token
-    const user = await this.app.get(TokenService).verifyToken(accessToken);
-    if (!user || user === undefined || user.sub === undefined) {
+    const { success, message, user } = await this.wsAuth.authenticateUser(
+      request,
+      this.app,
+    );
+
+    if (!success) {
       socket.destroy();
+      this.logger.error(`Websocket authentication failed: ${message}`);
       return;
     }
 
@@ -198,23 +190,25 @@ export class DynamicWebSocketAdapter implements WebSocketAdapter {
     }
     this.connections.get(userId).push(socket);
 
-    // Optional: store connection in Redis
     await this.redisClient.sadd(`ws:connections:${userId}`, socket.url);
 
     // Handle disconnection
     socket.on('close', async () => {
-      const userConnections = this.connections.get(userId);
-      if (userConnections) {
-        const index = userConnections.indexOf(socket);
-        if (index > -1) {
-          userConnections.splice(index, 1);
-        }
-        // Remove from Redis if no connections remain
-        if (userConnections.length === 0) {
-          await this.redisClient.del(`ws:connections:${userId}`);
-          // Remove all stored notifications
-          await this.redisClient.del(`user:${userId}:notifications`);
-        }
+      // Remove the closed socket from the connections array
+      const userConnections = this.connections.get(userId) || [];
+      const updatedConnections = userConnections.filter((s) => s !== socket);
+      this.connections.set(userId, updatedConnections);
+
+      // Log the disconnection event
+      this.logger.log(`Socket for user ${userId} disconnected.`);
+
+      // If no more sockets remain for this user, remove the Redis entries
+      if (updatedConnections.length === 0) {
+        await this.redisClient.del(`ws:connections:${userId}`);
+        await this.redisClient.del(`user:${userId}:notifications`);
+        this.logger.log(
+          `All sockets for user ${userId} are closed. Redis keys removed.`,
+        );
       }
     });
   }

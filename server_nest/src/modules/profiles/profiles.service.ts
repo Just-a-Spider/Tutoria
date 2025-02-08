@@ -69,7 +69,11 @@ export class ProfilesService {
 
     // Delete the current profile picture if it exists
     if (selectecProfile.profile_picture) {
-      await fs.unlink(join(process.cwd(), selectecProfile.profile_picture));
+      try {
+        await fs.unlink(join(process.cwd(), selectecProfile.profile_picture));
+      } catch (error) {
+        this.logger.error(`Error deleting file: ${error.message}`);
+      }
     }
 
     selectecProfile.profile_picture = file.path;

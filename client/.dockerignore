@@ -1,0 +1,7 @@
+node_modules
+dist
+.git
+.vscode
+src/environments/
+Procfile
+README.md

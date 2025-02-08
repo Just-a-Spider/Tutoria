@@ -1,0 +1,96 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: tutoria-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: tutoria-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_SERVICE_PORT}:6379"
+
+  server:
+    build:
+      context: ./server_nest
+      dockerfile: Dockerfile
+    command: sh -c "npx mikro-orm migration:up && npm run start:dev"
+    container_name: tutoria-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:8000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      # Database connection variables
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_SERVER_PORT}
+      # JWT secret and Google OAuth variables
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=http://localhost:${SERVER_PORT}/api/oauth/complete/google-oauth2/
+      # Redis connection variables
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_SERVER_PORT}
+      - REDIS_URL=${REDIS_URL}
+      # Client URL and CORS origin
+      # We use 'client' because that's the dns Docker uses to refer to the client service
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - LOGIN_REDIRECT_URL=${LOGIN_REDIRECT_URL}
+      - LOGOUT_REDIRECT_URL=${LOGOUT_REDIRECT_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./server_nest/src:/server/src
+      - uploads:/app/uploads
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        SERVER_URL: ${SERVER_URL}
+    command: ng serve --host 0.0.0.0 --public-host localhost:4200
+    container_name: tutoria-client
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${CLIENT_PORT}:4200"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - SERVER_URL=${SERVER_URL}
+    depends_on:
+      - server
+    volumes:
+      - ./client/src:/client/src
+      - ./client/public:/client/public
+      - ./client/angular.json:/client/angular.json
+      - ./client/package.json:/client/package.json
+
+volumes:
+  postgres-data:
+  uploads:

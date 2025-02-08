@@ -16,16 +16,15 @@ export class PostsEventListener {
 
   @OnEvent('post.tutor.created')
   async handleTutorPostCreatedEvent(payload: PostCreatedEvent) {
-    await this.notificationsService.createNotification(
-      true,
-      new CreateNotificationDto(
-        'Nuevo post de tutor',
-        `Nuevo post del tutor ${payload.creatorUsername} en el curso ${payload.courseName}`,
-        payload.postId,
-        payload.courseId.toString(),
-        payload.user,
-      ),
-    );
+    const notification: CreateNotificationDto = {
+      title: 'Nuevo post de tutor',
+      content: `Nuevo post del tutor ${payload.creatorUsername} en el curso ${payload.courseName}`,
+      instanceId: payload.postId,
+      subinstanceId: payload.courseId.toString(),
+      user: payload.user,
+    };
+
+    await this.notificationsService.createNotification(true, notification);
     const users = await this.coursesService.getListedMemberFromACourse(
       payload.user,
       payload.courseId,
@@ -39,16 +38,15 @@ export class PostsEventListener {
 
   @OnEvent('post.student.created')
   async handleStudentPostCreatedEvent(payload: PostCreatedEvent) {
-    await this.notificationsService.createNotification(
-      false,
-      new CreateNotificationDto(
-        'Nuevo post de estudiante',
-        `Nueva petición de ayuda de ${payload.creatorUsername} en el curso ${payload.courseName}`,
-        payload.postId,
-        payload.courseId.toString(),
-        payload.user,
-      ),
-    );
+    const notification: CreateNotificationDto = {
+      title: 'Nuevo post de estudiante',
+      content: `Nueva petición de ayuda de ${payload.creatorUsername} en el curso ${payload.courseName}`,
+      instanceId: payload.postId,
+      subinstanceId: payload.courseId.toString(),
+      user: payload.user,
+    };
+
+    await this.notificationsService.createNotification(false, notification);
     const tutors = await this.coursesService.getListedMemberFromACourse(
       payload.user,
       payload.courseId,
