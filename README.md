@@ -1,3 +1,17 @@
+# Pasos para replicar con docker
+Dentro de la carpeta principal
+```bash
+docker compose up -d
+```
+
+Y listo.
+## Importante
+La integración del front en docker está como archivos estáticos en el servidor. Para que se suban los cambios mientras se está desarrollando el front, usar dentro de la carpeta /client:
+```bash
+npm run watch
+```
+Esto es un tanto inconveniente pues para que los cambios del front se actualicen en el servicio, se tiene que recargar la página. Fuera de eso, está para revisar algún bug.
+
 # Pasos para replicar backend (so far lo que hay)
 > [!IMPORTANT]
 > No olviden que deben estar corriendo sus servicios de postgres y redis de docker 

@@ -18,10 +18,10 @@ import { WebsocketModule } from './utils/websocket.module';
 @Module({
   imports: [
     // Static files from the Angular app
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'client-dist/client/browser'),
-    //   exclude: ['/api*'],
-    // }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'static/browser'),
+      exclude: ['/api*'],
+    }),
 
     // Config
     ConfigModule.forRoot({
